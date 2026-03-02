@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "$#$",
+    "$#$"
+  ],
+  "key": {
+    "$": {
+      "item": "minecraft:gold_ingot"
+    },
+    "#": {
+      "item": "orespark:mantis_flesh"
+    }
+  },
+  "result": {
+    "item": "orespark:mantis_chestplate",
+    "count" : 1
+  }
+}

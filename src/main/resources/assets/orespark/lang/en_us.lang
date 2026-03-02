@@ -1,0 +1,33 @@
+# Items
+item.fertilizer.name=Fertilizer
+item.feller_axe.name=Feller Axe
+item.ruby.name=Ruby
+item.ruby_sword.name=Ruby Sword
+item.ruby_pickaxe.name=Ruby Pickaxe
+item.ruby_axe.name=Ruby Axe
+item.ruby_shovel.name=Ruby Shovel
+item.ruby_hoe.name=Ruby Hoe
+item.ruby_helmet.name=Ruby Helmet
+item.ruby_chestplate.name=Ruby Chestplate
+item.ruby_leggings.name=Ruby Leggings
+item.ruby_boots.name=Ruby Boots
+item.mantis_helmet.name=Mantis Helmet
+item.mantis_chestplate.name=Mantis Chestplate
+item.mantis_leggings.name=Mantis Leggings
+item.mantis_boots.name=Mantis Boots
+item.mantis_flesh.name=Mantis Sclerite
+item.thunder_staff.name=Thunder Staff
+item.blt.name=BLT Sandwich
+item.rustbane.name=Rustbane Sprig
+item.rustbane_seed.name=Rustbane Bulb
+item.miners_desire.name=Miner's Desire
+item.miners_dream.name=Miner's Dream
+item.miners_wish.name=Miner's Wish
+
+# Blocks
+tile.ruby_ore.name=Ruby Ore
+tile.ruby_block.name=Ruby Block
+
+# Entities
+entity.mantis.name=Mantis
+entity.dirtgolem.name=Dirt Golem

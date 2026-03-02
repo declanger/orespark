@@ -1,0 +1,16 @@
+[
+	{
+		"modid": "orespark",
+		"name": "Orespark 1.12.2",
+		"description": "A continuation of Orespawn",
+		"version": "${version}",
+		"mcversion": "1.12.2",
+		"url": "",
+		"updateUrl": "",
+		"authorList": ["InkyTea"],
+		"credits": "",
+		"logoFile": "",
+		"screenshots": [],
+		"dependencies": []
+	}
+]

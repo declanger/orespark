@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#$#",
+    "# #"
+  ],
+  "key": {
+    "$": {
+      "item": "minecraft:gold_block"
+    },
+    "#": {
+      "item": "orespark:mantis_flesh"
+    }
+  },
+  "result": {
+    "item": "orespark:mantis_helmet",
+    "count" : 1
+  }
+}

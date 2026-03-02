@@ -1,0 +1,103 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url = "https://maven.minecraftforge.net/" }
+		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+	}
+	
+	dependencies {
+		classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+"
+		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+	}
+}
+
+apply plugin: "java"
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: 'org.spongepowered.mixin'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+compileJava {
+	sourceCompatibility = "8"
+	targetCompatibility = "8"
+}
+
+repositories {
+	maven { url = "https://maven.minecraftforge.net/" }
+	maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+}
+
+dependencies {
+	minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2860"
+	implementation('org.spongepowered:mixin:0.8.5') {
+		exclude module: 'launchwrapper'
+		exclude module: 'guava'
+		exclude module: 'gson'
+		exclude module: 'commons-io'
+	}
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+	add sourceSets.main, "orespark.refmap.json"
+
+	config "orespark.mixins.json"
+}
+
+minecraft {
+	mappings channel: "stable", version: "39-1.12"
+	
+	runs {
+		"client" {
+			workingDirectory file("./run")
+			mods { "${project.name}" { source sourceSets.main } }
+		}
+		
+		"server" {
+			workingDirectory file("./run/server")
+			mods { "${project.name}" { source sourceSets.main } }
+		}
+	}
+}
+
+processResources {
+	inputs.property "version", project.version
+	
+	filesMatching("mcmod.info") {
+		expand "version": project.version
+	}
+}
+
+jar {
+	destinationDirectory.set(file("C:/Users/kachd/curseforge/minecraft/Instances/Orespark/mods"))
+	manifest.attributes(
+			'ForceLoadAsMod': 'true',
+			'FMLCorePluginContainsFMLMod': 'true',
+			'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+			"MixinConfigs": "orespark.mixins.json",
+			'TweakOrder': '0'
+	)
+}
+
+//When Forge 1.12 loads mods from a directory that's been put on the classpath, it expects to find resources in the same directory.
+//Default Gradle behavior puts resources in ./build/resources/main instead of ./build/classes/main/java. Let's change that.
+sourceSets.all { it.output.resourcesDir = it.output.classesDirs.getFiles().iterator().next() }
+
+sourceSets {
+	main {
+		resources {
+			// Adds the generated folder to the list of resource sources
+			srcDirs += ["src/generated/resources"]
+		}
+	}
+}
+
+task runDataGen(type: JavaExec) {
+	group = 'build'
+	description = 'Generates JSON files for the mod'
+
+	classpath = sourceSets.test.runtimeClasspath
+
+	main = 'com.orespark.DataGenerators'
+
+	dependsOn testClasses
+}

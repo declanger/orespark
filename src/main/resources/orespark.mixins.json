@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.orespark.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "orespark.refmap.json",
+  "mixins": [
+    "CreeperMixin"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}
