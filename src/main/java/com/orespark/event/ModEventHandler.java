@@ -19,7 +19,7 @@ public class ModEventHandler {
         Entity entity = event.getEntity();
         if (entity instanceof EntityCreeper) {
             EntityCreeper creeper = (EntityCreeper) entity;
-            if (world.getDifficulty() != EnumDifficulty.EASY && world.rand.nextFloat() < (world.getDifficulty() == EnumDifficulty.HARD ? 0.2f : 0.05f)) {
+            if (world.getDifficulty() != EnumDifficulty.EASY && world.rand.nextFloat() <= (world.getDifficulty() == EnumDifficulty.HARD ? 0.2f : 0.05f)) {
                 creeper.onStruckByLightning(null);
                 creeper.extinguish();
                 creeper.setHealth(creeper.getMaxHealth());
