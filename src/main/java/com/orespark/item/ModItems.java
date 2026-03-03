@@ -55,7 +55,7 @@ public class ModItems {
     public static ItemStaff THUNDER_STAFF = new ItemStaff("thunder_staff").setCreativeTab(CreativeTabs.COMBAT);
 
     public static ItemRustBaneSeed RUSTBANE_SEED = new ItemRustBaneSeed();
-    public static ItemBase RUSTBANE = new ItemBase("rustbane").setCreativeTab(CreativeTabs.MATERIALS);
+    //public static ItemBase RUSTBANE = new ItemBase("rustbane").setCreativeTab(CreativeTabs.MATERIALS);
 
     public static void register(IForgeRegistry<Item> registry) {
 

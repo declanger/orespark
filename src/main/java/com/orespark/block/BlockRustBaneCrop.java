@@ -18,6 +18,6 @@ public class BlockRustBaneCrop extends BlockCrops {
 
     @Override
     protected Item getCrop() {
-        return ModItems.RUSTBANE;
+        return ModItems.RUSTBANE_SEED;
     }
 }
