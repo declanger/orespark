@@ -1,9 +1,6 @@
 package com.orespark.entity.render;
 
-import com.orespark.entity.EntityDirtGolem;
-import com.orespark.entity.EntityMantis;
-import com.orespark.entity.EntityStoneGolem;
-import com.orespark.entity.EntityTreeGolem;
+import com.orespark.entity.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -36,6 +33,19 @@ public class EntityRenderers {
             @Override
             public Render<? super EntityTreeGolem> createRenderFor(RenderManager renderManager) {
                 return new RenderTreeGolem(renderManager);
+            }
+        });
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityGrub.class, new IRenderFactory<EntityGrub>() {
+            @Override
+            public Render<? super EntityGrub> createRenderFor(RenderManager renderManager) {
+                return new RenderGrub(renderManager);
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityRhinoBeetle.class, new IRenderFactory<EntityRhinoBeetle>() {
+            @Override
+            public Render<? super EntityRhinoBeetle> createRenderFor(RenderManager renderManager) {
+                return new RenderRhinoBeetle(renderManager);
             }
         });
     }

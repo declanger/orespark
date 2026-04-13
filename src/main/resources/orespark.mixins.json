@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "orespark.refmap.json",
   "mixins": [
+    "ItemArmorMixin",
+    "ItemToolMixin"
   ],
   "client": [
   ],

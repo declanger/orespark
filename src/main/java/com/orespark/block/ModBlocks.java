@@ -16,6 +16,7 @@ public class ModBlocks {
 
     public static BlockOre RUBY_ORE = new BlockOre("ruby_ore").setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     public static BlockBase RUBY_BLOCK = new BlockBase(Material.ROCK, "ruby_block").setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+    public static BlockCrucible CRUCIBLE = new BlockCrucible(Material.IRON, "crucible");
 
     @CustomModel
     @NoItemBlock

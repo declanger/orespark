@@ -1,12 +1,15 @@
 package com.orespark.item.custom;
 
+import com.orespark.Orespark;
 import com.orespark.item.ItemBase;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockMushroom;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.block.IGrowable;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -40,32 +43,36 @@ public class ItemFertilizer extends ItemBase {
     }
 
     public static boolean applyBonemeal(ItemStack itemStack, World world, BlockPos blockPos, EntityPlayer player, @Nullable EnumHand hand) {
+        if (world.isRemote) { return false; }
+
         IBlockState iblockstate = world.getBlockState(blockPos);
         int hook = ForgeEventFactory.onApplyBonemeal(player, world, blockPos, iblockstate, itemStack, hand);
         if (hook != 0) {
             return hook > 0;
         } else {
-            if (iblockstate.getBlock() instanceof BlockSapling) {
+            Block block = iblockstate.getBlock();
+            if (block instanceof BlockSapling) {
                 BlockSapling sapling = (BlockSapling)iblockstate.getBlock();
-                if (!world.isRemote) {
-                    itemStack.shrink(1);
-                    sapling.generateTree(world,blockPos,iblockstate,world.rand);
-                }
+                itemStack.shrink(1);
+                sapling.generateTree(world,blockPos,iblockstate,world.rand);
                 return true;
             }
-            else if (iblockstate.getBlock() instanceof IGrowable) {
-                IGrowable igrowable = (IGrowable)iblockstate.getBlock();
-                if (igrowable.canGrow(world, blockPos, iblockstate, world.isRemote)) {
-                    if (!world.isRemote) {
-                        if (igrowable.canUseBonemeal(world, world.rand, blockPos, iblockstate)) {
-                            igrowable.grow(world, world.rand, blockPos, iblockstate);
-                        }
+            else if (block instanceof BlockMushroom) {
+                BlockMushroom mushroom = (BlockMushroom) iblockstate.getBlock();
+                mushroom.generateBigMushroom(world,blockPos,iblockstate,world.rand);
+                itemStack.shrink(1);
+                return true;
+            }
+            else if (block instanceof IGrowable) {
+                try {
+                    PropertyInteger age = (PropertyInteger) block.getClass().getField("AGE").get(block);
+                    Orespark.LOGGER.info(age.getAllowedValues().size());
+                    world.setBlockState(blockPos,block.getDefaultState().withProperty(age,age.getAllowedValues().size()));
 
-                        itemStack.shrink(1);
-                    }
-
-                    return true;
+                } catch (NoSuchFieldException | IllegalAccessException ignored) {
                 }
+                itemStack.shrink(1);
+                return true;
             }
 
             return false;

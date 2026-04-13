@@ -1,14 +1,20 @@
 package com.orespark.util;
 
 import com.google.common.reflect.ClassPath;
-import com.orespark.Orespark;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class OresparkUtil {
+
+    public static Dictionary<String, ArrayList<Item>> meltables = new Hashtable<>();
+    public static final int GUI_CRUCIBLE = 1;
 
     public static void init() {
         // Loot Tables
@@ -45,5 +51,17 @@ public class OresparkUtil {
     public static double moveTowards(double from, double to, double step) {
         boolean negative = from > to;
         return negative ? Math.max(to,from - step) : Math.min(to,from + step);
+    }
+
+    public static void addMeltable(String s, Item i) {
+        ArrayList<Item> l = meltables.get(s);
+        if (l != null) {
+            l.add(i);
+        }
+        else {
+            l = new ArrayList<Item>();
+            l.add(i);
+            meltables.put(s,l);
+        }
     }
 }

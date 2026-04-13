@@ -3,6 +3,15 @@ package com.orespark.event;
 import com.orespark.Orespark;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
+import net.minecraft.entity.passive.EntityZombieHorse;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -25,5 +34,28 @@ public class ModEventHandler {
                 creeper.setHealth(creeper.getMaxHealth());
             }
         }
+        else if (entity instanceof EntityZombie) {
+            EntityZombie zombie = (EntityZombie) entity;
+            if (world.getDifficulty() != EnumDifficulty.EASY && world.rand.nextFloat() <= (world.getDifficulty() == EnumDifficulty.HARD ? 0.4f : 0.1f)) {
+                EntityZombieHorse horse = new EntityZombieHorse(world);
+                horse.setPositionAndRotation(zombie.posX,zombie.posY,zombie.posZ,zombie.rotationYaw,zombie.rotationPitch);
+                world.spawnEntity(horse);
+                horse.setHorseTamed(true);
+                horse.replaceItemInInventory(400,new ItemStack(Items.SADDLE));
+                zombie.startRiding(horse);
+            }
+        }
+        else if (entity instanceof EntitySkeleton) {
+            EntitySkeleton skeleton = (EntitySkeleton) entity;
+            if (world.getDifficulty() != EnumDifficulty.EASY && world.rand.nextFloat() <= (world.getDifficulty() == EnumDifficulty.HARD ? 0.4f : 0.1f)) {
+                EntitySkeletonHorse horse = new EntitySkeletonHorse(world);
+                horse.setPositionAndRotation(skeleton.posX,skeleton.posY,skeleton.posZ,skeleton.rotationYaw,skeleton.rotationPitch);
+                world.spawnEntity(horse);
+                horse.setHorseTamed(true);
+                horse.replaceItemInInventory(400,new ItemStack(Items.SADDLE));
+                skeleton.startRiding(horse);
+            }
+        }
+
     }
 }
