@@ -68,7 +68,8 @@ processResources {
 }
 
 jar {
-	destinationDirectory.set(file("C:/Users/kachd/curseforge/minecraft/Instances/Orespark/mods"))
+	//destinationDirectory.set(file("C:/Users/kachd/curseforge/minecraft/Instances/Orespark/mods"))
+	destinationDirectory.set(file("build"))
 	manifest.attributes(
 			'ForceLoadAsMod': 'true',
 			'FMLCorePluginContainsFMLMod': 'true',
