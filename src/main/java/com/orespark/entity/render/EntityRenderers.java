@@ -48,5 +48,17 @@ public class EntityRenderers {
                 return new RenderRhinoBeetle(renderManager);
             }
         });
+        RenderingRegistry.registerEntityRenderingHandler(EntityDetomato.class, new IRenderFactory<EntityDetomato>() {
+            @Override
+            public Render<? super EntityDetomato> createRenderFor(RenderManager renderManager) {
+                return new RenderDetomato(renderManager);
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityPlantArrow.class, new IRenderFactory<EntityPlantArrow>() {
+            @Override
+            public Render<? super EntityPlantArrow> createRenderFor(RenderManager renderManager) {
+                return new RenderPlantArrow(renderManager);
+            }
+        });
     }
 }

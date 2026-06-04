@@ -1,6 +1,7 @@
 package com.orespark.block;
 
 import com.orespark.Orespark;
+import com.orespark.block.entity.BlockFletchrootCrop;
 import com.orespark.util.CustomModel;
 import com.orespark.util.NoItemBlock;
 import net.minecraft.block.Block;
@@ -22,6 +23,10 @@ public class ModBlocks {
     @NoItemBlock
     public static BlockRustBaneCrop RUSTBANE = new BlockRustBaneCrop();
 
+    @CustomModel
+    @NoItemBlock
+    public static BlockFletchrootCrop FLETCHROOT = new BlockFletchrootCrop();
+
     public static void register(IForgeRegistry<Block> registry) {
         try {
             for (Field field : ModBlocks.class.getFields()) {
@@ -35,8 +40,10 @@ public class ModBlocks {
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         try {
             for (Field field : ModBlocks.class.getFields()) {
-                Block block = (Block) field.get(null);
-                registry.register(new ItemBlock(block).setRegistryName(field.getName().toLowerCase()));
+                if (field.getAnnotation(NoItemBlock.class) == null) {
+                    Block block = (Block) field.get(null);
+                    registry.register(new ItemBlock(block).setRegistryName(field.getName().toLowerCase()));
+                }
             }
         }
         catch (IllegalAccessException e) {

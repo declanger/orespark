@@ -1,4 +1,7 @@
 # Items
+item.plant_arrow.name=Fletchroot Stalk
+item.plant_arrow_seed.name=Fletchroot Seed
+item.detomato.name=Detomato
 item.fertilizer.name=Fertilizer
 item.feller_axe.name=Feller Axe
 item.ruby.name=Ruby

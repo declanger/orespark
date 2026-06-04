@@ -1,9 +1,13 @@
 package com.orespark.util;
 
 import com.google.common.reflect.ClassPath;
+import com.orespark.Orespark;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentUtils;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 
 import java.io.IOException;
@@ -39,6 +43,12 @@ public class OresparkUtil {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void print(Object message, World world) {
+        if (world != null) {
+            Orespark.LOGGER.info(message.toString());
         }
     }
 

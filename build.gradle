@@ -50,6 +50,7 @@ minecraft {
 		"client" {
 			workingDirectory file("./run")
 			mods { "${project.name}" { source sourceSets.main } }
+
 		}
 		
 		"server" {
@@ -101,4 +102,12 @@ task runDataGen(type: JavaExec) {
 	main = 'com.orespark.DataGenerators'
 
 	dependsOn testClasses
+
+	standardOutput = System.out
+	errorOutput = System.err
+}
+
+// Or, the more common modern way for a JavaExec task:
+test {
+	testLogging.showStandardStreams = true
 }

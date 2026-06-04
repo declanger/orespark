@@ -1,10 +1,7 @@
 package com.orespark.item;
 
 import com.orespark.Orespark;
-import com.orespark.item.custom.ItemFertilizer;
-import com.orespark.item.custom.ItemMiner;
-import com.orespark.item.custom.ItemRustBaneSeed;
-import com.orespark.item.custom.ItemStaff;
+import com.orespark.item.custom.*;
 import com.orespark.item.tool.*;
 import com.orespark.util.ToolModel;
 import net.minecraft.creativetab.CreativeTabs;
@@ -50,12 +47,16 @@ public class ModItems {
     public static ItemArmorBase MANTIS_BOOTS = new ItemArmorBase(Orespark.mantisArmorMaterial, EntityEquipmentSlot.FEET, "mantis_boots");
 
     public static ItemBase MANTIS_FLESH = new ItemBase("mantis_flesh").setCreativeTab(CreativeTabs.MATERIALS);
+    public static ItemDetomato DETOMATO = new ItemDetomato("detomato");
+
+    public static ItemPlantArrowSeed PLANT_ARROW_SEED = new ItemPlantArrowSeed();
+    public static ItemPlantArrow PLANT_ARROW = new ItemPlantArrow("plant_arrow");
 
     @ToolModel
     public static ItemStaff THUNDER_STAFF = new ItemStaff("thunder_staff").setCreativeTab(CreativeTabs.COMBAT);
 
     public static ItemRustBaneSeed RUSTBANE_SEED = new ItemRustBaneSeed();
-    //public static ItemBase RUSTBANE = new ItemBase("rustbane").setCreativeTab(CreativeTabs.MATERIALS);
+    public static ItemBase RUSTBANE = new ItemBase("rustbane").setCreativeTab(CreativeTabs.MATERIALS);
 
     public static void register(IForgeRegistry<Item> registry) {
 
