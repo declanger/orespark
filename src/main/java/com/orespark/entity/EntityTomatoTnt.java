@@ -1,7 +1,9 @@
 package com.orespark.entity;
 
+import com.orespark.Orespark;
 import com.orespark.particle.ParticleSplat;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -9,10 +11,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class EntityTomatoTnt extends Entity{
     
@@ -103,9 +109,21 @@ public class EntityTomatoTnt extends Entity{
 
     private void explode()
     {
-        float f = 4.0F;
-        Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSplat(world,posX,posY,posZ,0,0,0));
-        this.world.createExplosion(this, this.posX, this.posY + (double)(this.height / 16.0F), this.posZ, 4.0F, true);
+        Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSplat(world,posX,posY + 0.3f,posZ,0,0,0, 3f));
+        List<Entity> entities = this.world.getEntitiesWithinAABBExcludingEntity(owner,new AxisAlignedBB(posX - 5,posY - 5,posZ - 5,posX + 5,posY + 5,posZ + 5));
+        DamageSource damageSource = owner == null ? DamageSource.causeExplosionDamage((Explosion) null) : DamageSource.causeExplosionDamage(owner);
+        for (Entity entity : entities) {
+            float d = entity.getDistance(this) + 0.01f;
+            entity.attackEntityFrom(damageSource,10 / (d + 1) + 5);
+            double x = (entity.posX - posX) / d * 10;
+            double y = (entity.posY - posY) / d * 10;
+            double z = (entity.posZ - posZ) / d * 10;
+            Orespark.LOGGER.info("x: " + x + " y: " + y + " z: " + z);
+            entity.motionX += x;
+            entity.motionY += y;
+            entity.motionZ += z;
+        }
+
     }
 
     protected void writeEntityToNBT(NBTTagCompound compound)

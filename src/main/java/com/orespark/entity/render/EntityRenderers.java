@@ -60,5 +60,11 @@ public class EntityRenderers {
                 return new RenderPlantArrow(renderManager);
             }
         });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTomatoTnt.class, new IRenderFactory<EntityTomatoTnt>() {
+            @Override
+            public Render<? super EntityTomatoTnt> createRenderFor(RenderManager renderManager) {
+                return new RenderTomatoTnt(renderManager);
+            }
+        });
     }
 }

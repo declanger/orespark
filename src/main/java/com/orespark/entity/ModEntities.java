@@ -15,6 +15,7 @@ public class ModEntities {
         registerEntity("grub", EntityGrub.class,80);
         registerEntity("rhino_beetle", EntityRhinoBeetle.class,80);
         registerEntity("detomato_projectile", EntityDetomato.class,80);
+        registerEntity("detomato_tnt", EntityTomatoTnt.class,80);
         registerEntity("plant_arrow", EntityPlantArrow.class,80);
     }
 

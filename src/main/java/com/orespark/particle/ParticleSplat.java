@@ -28,11 +28,17 @@ public class ParticleSplat extends Particle {
     private TextureManager textureManager;
     private final int lifeTime = 6;
     private int life = 0;
+    private float size = 1.0f;
 
 
     public ParticleSplat(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         textureManager = Minecraft.getMinecraft().getTextureManager();
+    }
+
+    public ParticleSplat(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, float size) {
+        this(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
+        this.size = size;
     }
 
     @Override
@@ -45,7 +51,6 @@ public class ParticleSplat extends Particle {
             this.textureManager.bindTexture(SPLAT_TEXTURE);
             float texX1 = i / 5.0F;
             float texX2 = texX1 + 0.2F;
-            float f4 = 1.0F;
             float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
             float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
             float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
@@ -57,10 +62,10 @@ public class ParticleSplat extends Particle {
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             RenderHelper.disableStandardItemLighting();
             buffer.begin(7, VERTEX_FORMAT);
-            buffer.pos((double)(f5 - rotationX * f4 - rotationXY * f4), (double)(f6 - rotationZ * f4), (double)(f7 - rotationYZ * f4 - rotationXZ * f4)).tex((double)texX2, (double)1).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
-            buffer.pos((double)(f5 - rotationX * f4 + rotationXY * f4), (double)(f6 + rotationZ * f4), (double)(f7 - rotationYZ * f4 + rotationXZ * f4)).tex((double)texX2, (double)0).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
-            buffer.pos((double)(f5 + rotationX * f4 + rotationXY * f4), (double)(f6 + rotationZ * f4), (double)(f7 + rotationYZ * f4 + rotationXZ * f4)).tex((double)texX1, (double)0).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
-            buffer.pos((double)(f5 + rotationX * f4 - rotationXY * f4), (double)(f6 - rotationZ * f4), (double)(f7 + rotationYZ * f4 - rotationXZ * f4)).tex((double)texX1, (double)1).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos((double)(f5 - rotationX * size - rotationXY * size), (double)(f6 - rotationZ * size), (double)(f7 - rotationYZ * size - rotationXZ * size)).tex((double)texX2, (double)1).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos((double)(f5 - rotationX * size + rotationXY * size), (double)(f6 + rotationZ * size), (double)(f7 - rotationYZ * size + rotationXZ * size)).tex((double)texX2, (double)0).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos((double)(f5 + rotationX * size + rotationXY * size), (double)(f6 + rotationZ * size), (double)(f7 + rotationYZ * size + rotationXZ * size)).tex((double)texX1, (double)0).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
+            buffer.pos((double)(f5 + rotationX * size - rotationXY * size), (double)(f6 - rotationZ * size), (double)(f7 + rotationYZ * size - rotationXZ * size)).tex((double)texX1, (double)1).color(this.particleRed, this.particleGreen, this.particleBlue, 1.0F).lightmap(0, 240).normal(0.0F, 1.0F, 0.0F).endVertex();
             Tessellator.getInstance().draw();
             GlStateManager.disableAlpha();
             GlStateManager.disableBlend();
