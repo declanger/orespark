@@ -2,6 +2,7 @@ package com.orespark.entity;
 
 import com.orespark.Orespark;
 import com.orespark.particle.ParticleSplat;
+import com.orespark.particle.ParticleSplatBig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
@@ -109,15 +110,15 @@ public class EntityTomatoTnt extends Entity{
 
     private void explode()
     {
-        Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSplat(world,posX,posY + 0.3f,posZ,0,0,0, 3f));
-        List<Entity> entities = this.world.getEntitiesWithinAABBExcludingEntity(owner,new AxisAlignedBB(posX - 5,posY - 5,posZ - 5,posX + 5,posY + 5,posZ + 5));
+        Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSplatBig(world,posX,posY + 0.3f,posZ,0,0,0, 3.5f));
+        List<Entity> entities = this.world.getEntitiesWithinAABBExcludingEntity(owner,new AxisAlignedBB(posX - 2,posY - 2,posZ - 2,posX + 2,posY + 2,posZ + 2));
         DamageSource damageSource = owner == null ? DamageSource.causeExplosionDamage((Explosion) null) : DamageSource.causeExplosionDamage(owner);
         for (Entity entity : entities) {
             float d = entity.getDistance(this) + 0.01f;
-            entity.attackEntityFrom(damageSource,10 / (d + 1) + 5);
-            double x = (entity.posX - posX) / d * 10;
-            double y = (entity.posY - posY) / d * 10;
-            double z = (entity.posZ - posZ) / d * 10;
+            entity.attackEntityFrom(damageSource,(9f - d));
+            double x = (entity.posX - posX) / d * 0.65;
+            double y = (entity.posY - posY) / d * 0.45;
+            double z = (entity.posZ - posZ) / d * 0.65;
             Orespark.LOGGER.info("x: " + x + " y: " + y + " z: " + z);
             entity.motionX += x;
             entity.motionY += y;
