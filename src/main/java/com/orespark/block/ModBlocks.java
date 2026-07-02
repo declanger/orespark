@@ -3,6 +3,7 @@ package com.orespark.block;
 import com.orespark.Orespark;
 import com.orespark.block.entity.BlockFletchrootCrop;
 import com.orespark.util.CustomModel;
+import com.orespark.util.IconItemBlock;
 import com.orespark.util.NoItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -18,6 +19,9 @@ public class ModBlocks {
     public static BlockOre RUBY_ORE = new BlockOre("ruby_ore").setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     public static BlockBase RUBY_BLOCK = new BlockBase(Material.ROCK, "ruby_block").setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     public static BlockCrucible CRUCIBLE = new BlockCrucible(Material.IRON, "crucible");
+
+    @CustomModel
+    public static BlockBeeHive BEEHIVE = new BlockBeeHive("beehive");
 
     @CustomModel
     @NoItemBlock
@@ -54,7 +58,10 @@ public class ModBlocks {
     public static void registerModels() {
         try {
             for (Field field : ModBlocks.class.getFields()) {
-                if (field.getAnnotation(NoItemBlock.class) == null) {
+                if (field.getAnnotation(IconItemBlock.class) != null) {
+                    Orespark.proxy.registerItemRenderer(Item.getItemFromBlock((Block) field.get(null)),0, field.getName().toLowerCase());
+                }
+                else if (field.getAnnotation(NoItemBlock.class) == null) {
                     Orespark.proxy.registerItemRenderer(Item.getItemFromBlock((Block) field.get(null)), 0, field.getName().toLowerCase());
                 }
             }

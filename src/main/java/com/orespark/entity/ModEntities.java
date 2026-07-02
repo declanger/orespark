@@ -17,6 +17,7 @@ public class ModEntities {
         registerEntity("detomato_projectile", EntityDetomato.class,80);
         registerEntity("detomato_tnt", EntityTomatoTnt.class,80);
         registerEntity("plant_arrow", EntityPlantArrow.class,80);
+        registerEntity("bee", EntityBee.class,80);
     }
 
     private static void registerEntity(String name, Class<? extends Entity> entity, int trackingRange) {

@@ -66,5 +66,11 @@ public class EntityRenderers {
                 return new RenderTomatoTnt(renderManager);
             }
         });
+        RenderingRegistry.registerEntityRenderingHandler(EntityBee.class, new IRenderFactory<EntityBee>() {
+            @Override
+            public Render<? super EntityBee> createRenderFor(RenderManager renderManager) {
+                return new RenderBee(renderManager);
+            }
+        });
     }
 }

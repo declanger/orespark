@@ -1,0 +1,96 @@
+{
+	"texture_size": [64, 64],
+	"ambient_occlusion" : false,
+	"textures": {
+		"hive" : "orespark:blocks/beehive",
+		"particle": "orespark:items/beehive"
+	},
+	"elements": [
+		{
+			"from": [7.5, 12, 7.5],
+			"to": [8.5, 16, 8.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.5, 13, 8.5]},
+			"faces": {
+				"north": {"uv": [5, 3.5, 5.25, 4.5], "texture": "#hive"},
+				"east": {"uv": [5, 2.5, 5.25, 3.5], "texture": "#hive"},
+				"south": {"uv": [5.25, 3.5, 5.5, 4.5], "texture": "#hive"},
+				"west": {"uv": [5.25, 2.5, 5.5, 3.5], "texture": "#hive"},
+				"up": {"uv": [2.25, 9, 2, 8.75], "texture": "#hive"},
+				"down": {"uv": [2.5, 8.75, 2.25, 9], "texture": "#hive"}
+			}
+		},
+		{
+			"from": [4, 9, 4],
+			"to": [12, 11, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 10, 7.5]},
+			"faces": {
+				"north": {"uv": [5.5, 2, 7.5, 2.5], "texture": "#hive"},
+				"east": {"uv": [7.5, 2, 9.5, 2.5], "texture": "#hive"},
+				"south": {"uv": [8.75, 5.5, 10.75, 6], "texture": "#hive"},
+				"west": {"uv": [8, 0, 10, 0.5], "texture": "#hive"},
+				"up": {"uv": [5, 4.5, 3, 2.5], "texture": "#hive"}
+			}
+		},
+		{
+			"from": [5, 11, 5],
+			"to": [11, 12, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 12, 7.5]},
+			"faces": {
+				"north": {"uv": [0.5, 9.75, 2, 10], "texture": "#hive"},
+				"east": {"uv": [0.5, 10, 2, 10.25], "texture": "#hive"},
+				"south": {"uv": [0.5, 10.25, 2, 10.5], "texture": "#hive"},
+				"west": {"uv": [0.5, 10.5, 2, 10.75], "texture": "#hive"},
+				"up": {"uv": [6.5, 9.25, 5, 7.75], "texture": "#hive"}
+			}
+		},
+		{
+			"from": [3, 6, 3],
+			"to": [13, 9, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7.5, 8]},
+			"faces": {
+				"north": {"uv": [8, 1.25, 10.5, 2], "texture": "#hive"},
+				"east": {"uv": [8, 0.5, 10.5, 1.25], "texture": "#hive"},
+				"south": {"uv": [8.5, 2.5, 11, 3.25], "texture": "#hive"},
+				"west": {"uv": [8.5, 3.25, 11, 4], "texture": "#hive"},
+				"up": {"uv": [5.5, 2.5, 3, 0], "texture": "#hive"}
+			}
+		},
+		{
+			"from": [2, -1, 2],
+			"to": [14, 6, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2.5, 8]},
+			"faces": {
+				"north": {"uv": [5.5, 2.5, 8.5, 4.25], "texture": "#hive"},
+				"east": {"uv": [5.5, 4.25, 8.5, 6], "texture": "#hive"},
+				"south": {"uv": [0, 6, 3, 7.75], "texture": "#hive"},
+				"west": {"uv": [5.5, 6, 8.5, 7.75], "texture": "#hive"},
+				"up": {"uv": [3, 3, 0, 0], "texture": "#hive"},
+				"down": {"uv": [3, 3, 0, 6], "texture": "#hive"}
+			}
+		},
+		{
+			"from": [3, -3, 3],
+			"to": [13, -1, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, -2, 7.5]},
+			"faces": {
+				"north": {"uv": [5.5, 0, 8, 0.5], "texture": "#hive"},
+				"east": {"uv": [5.5, 0.5, 8, 1], "texture": "#hive"},
+				"south": {"uv": [5.5, 1, 8, 1.5], "texture": "#hive"},
+				"west": {"uv": [5.5, 1.5, 8, 2], "texture": "#hive"},
+				"down": {"uv": [5.5, 4.5, 3, 7], "texture": "#hive"}
+			}
+		},
+		{
+			"from": [5, -4, 5],
+			"to": [11, -3, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.5, -4, 7.5]},
+			"faces": {
+				"north": {"uv": [8.5, 7.5, 10, 7.75], "texture": "#hive"},
+				"east": {"uv": [9, 9.25, 10.5, 9.5], "texture": "#hive"},
+				"south": {"uv": [0.5, 9.25, 2, 9.5], "texture": "#hive"},
+				"west": {"uv": [0.5, 9.5, 2, 9.75], "texture": "#hive"},
+				"down": {"uv": [8, 7.75, 6.5, 9.25], "texture": "#hive"}
+			}
+		}
+	]
+}

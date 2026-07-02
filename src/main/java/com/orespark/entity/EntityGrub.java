@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 
 public class EntityGrub extends EntityMob {
 
-
     public EntityGrub(World world) {
         super(world);
         this.setSize(0.7f,0.3f);
