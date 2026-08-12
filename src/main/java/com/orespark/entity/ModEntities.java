@@ -7,17 +7,20 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class ModEntities {
     private static int id = 120;
+
+    private static final int trackingRange = 120;
+
     public static void registerEntities() {
-        registerEntity("mantis", EntityMantis.class,80);
-        registerEntity("dirt_golem", EntityDirtGolem.class,80);
-        registerEntity("stone_golem", EntityStoneGolem.class,80);
-        registerEntity("tree_golem", EntityTreeGolem.class,80);
-        registerEntity("grub", EntityGrub.class,80);
-        registerEntity("rhino_beetle", EntityRhinoBeetle.class,80);
-        registerEntity("detomato_projectile", EntityDetomato.class,80);
-        registerEntity("detomato_tnt", EntityTomatoTnt.class,80);
-        registerEntity("plant_arrow", EntityPlantArrow.class,80);
-        registerEntity("bee", EntityBee.class,80);
+        registerEntity("mantis", EntityMantis.class,trackingRange);
+        registerEntity("dirt_golem", EntityDirtGolem.class,trackingRange);
+        registerEntity("stone_golem", EntityStoneGolem.class,trackingRange);
+        registerEntity("tree_golem", EntityTreeGolem.class,trackingRange);
+        registerEntity("grub", EntityGrub.class,trackingRange);
+        registerEntity("rhino_beetle", EntityRhinoBeetle.class,trackingRange);
+        registerEntity("detomato_projectile", EntityDetomato.class,trackingRange);
+        registerEntity("detomato_tnt", EntityTomatoTnt.class,trackingRange);
+        registerEntity("plant_arrow", EntityPlantArrow.class,trackingRange);
+        registerEntity("bee", EntityBee.class,trackingRange);
     }
 
     private static void registerEntity(String name, Class<? extends Entity> entity, int trackingRange) {
