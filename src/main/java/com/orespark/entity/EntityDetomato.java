@@ -114,8 +114,8 @@ public class EntityDetomato extends Entity implements IProjectile {
     private void onHit(RayTraceResult raytraceresult) {
         if (raytraceresult.entityHit != null)
         {
-            raytraceresult.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this,this.owner != null ? this.owner : null).setProjectile(), 3.0F);
             if (raytraceresult.entityHit == owner) return;
+            raytraceresult.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this,this.owner != null ? this.owner : null).setProjectile(), 3.0F);
             this.setDead();
             Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSplat(world,posX,posY,posZ,0,0,0));
         }
@@ -125,12 +125,12 @@ public class EntityDetomato extends Entity implements IProjectile {
     private Entity getHitEntity(Vec3d p_190538_1_, Vec3d p_190538_2_)
     {
         Entity entity = null;
-        List<Entity> list = this.world.getEntitiesWithinAABB (EntityLivingBase.class, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D));
         double d0 = 0.0D;
 
         for (Entity entity1 : list)
         {
-            if (entity1 != this.owner)
+            if (!entity1.isEntityEqual(owner) && entity1.canBeCollidedWith())
             {
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(p_190538_1_, p_190538_2_);
@@ -158,7 +158,7 @@ public class EntityDetomato extends Entity implements IProjectile {
             List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class,new AxisAlignedBB(posX-  2,posY - 2,posZ - 2,posX + 2,posY + 2,posZ + 2));
             for (EntityLivingBase e : entities) {
                 if (e != owner) {
-                    e.attackEntityFrom(DamageSource.causeThrownDamage(this,this.owner != null ? this.owner : null).setProjectile(), 2.0F);
+                    e.attackEntityFrom(DamageSource.causeExplosionDamage(this.owner != null ? this.owner : null), 2.0F);
                 }
             }
         }
