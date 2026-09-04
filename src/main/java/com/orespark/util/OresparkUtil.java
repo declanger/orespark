@@ -5,6 +5,7 @@ import com.orespark.Orespark;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.world.World;
@@ -74,4 +75,14 @@ public class OresparkUtil {
             meltables.put(s,l);
         }
     }
+
+    public static float clippedSin(float x) {
+        return Math.max(MathHelper.sin(x),0);
+    }
+
+    public static float clippedCos(float x) {
+        return Math.max(MathHelper.cos(x),0);
+    }
+
+    public static final float PI = (float) Math.PI;
 }

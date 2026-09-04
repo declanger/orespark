@@ -8,6 +8,7 @@ import com.orespark.proxy.CommonProxy;
 import com.orespark.util.OresparkUtil;
 import com.orespark.world.ModWorldGeneration;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -85,5 +86,7 @@ public class Orespark {
 	public static final Item.ToolMaterial gemToolMaterial = EnumHelper.addToolMaterial("GEM",4,2670,10.0f,8f, 25);
 	public static final ItemArmor.ArmorMaterial gemArmorMaterial = EnumHelper.addArmorMaterial("GEM", MODID + ":ruby", 41, new int[]{4,7,9,4}, 25, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.5f);
 	public static final ItemArmor.ArmorMaterial mantisArmorMaterial = EnumHelper.addArmorMaterial("MANTIS", MODID + ":mantis", 41, new int[]{4,7,9,4}, 25, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 2.5f);
+
+	public static final EnumCreatureAttribute PLANT = EnumHelper.addCreatureAttribute("PLANT");
 
 }

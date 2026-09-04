@@ -1,9 +1,12 @@
 package com.orespark.entity;
 
+import com.orespark.Orespark;
 import com.orespark.item.ModItems;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -27,16 +30,18 @@ public class EntityPlantArrow extends EntityArrow {
 
     @Override
     public void onUpdate() {
-        double pX = motionX;
-        double pY = motionY;
-        double pZ = motionZ;
+        if (getIsCritical()) {
+            setIsCritical(false);
+        }
         super.onUpdate();
         if (!this.inGround) {
             if (!this.hasNoGravity())
             {
-                this.motionX = pX;
-                this.motionZ = pZ;
-                this.motionY = pY -0.01D;
+                this.motionY += 0.035D;
+
+                //this.motionX = pX;
+                //this.motionZ = pZ;
+
             }
         }
     }
@@ -45,6 +50,22 @@ public class EntityPlantArrow extends EntityArrow {
     protected void onHit(RayTraceResult raytraceResultIn) {
         this.setDamage(1);
         super.onHit(raytraceResultIn);
+    }
+
+    @Override
+    public void shoot(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy)
+    {
+        float f = -MathHelper.sin(yaw * 0.017453292F) * MathHelper.cos(pitch * 0.017453292F);
+        float f1 = -MathHelper.sin(pitch * 0.017453292F);
+        float f2 = MathHelper.cos(yaw * 0.017453292F) * MathHelper.cos(pitch * 0.017453292F);
+        this.shoot((double)f, (double)f1, (double)f2, velocity * 2f, inaccuracy);
+        this.motionX += shooter.motionX;
+        this.motionZ += shooter.motionZ;
+
+        if (!shooter.onGround)
+        {
+            this.motionY += shooter.motionY;
+        }
     }
 }
 

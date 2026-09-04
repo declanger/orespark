@@ -33,4 +33,13 @@ tile.ruby_block.name=Ruby Block
 
 # Entities
 entity.mantis.name=Mantis
-entity.dirtgolem.name=Dirt Golem
+entity.dirt_golem.name=Dirt Golem
+entity.stone_golem.name=Dirt Golem
+entity.tree_golem.name=Tree Golem
+entity.grub.name=Beetle Grub
+entity.rhino_beetle.name=Rhino Beetle
+entity.detomato_projectile.name=Detomato
+entity.detomato_tnt.name=Detomato
+entity.plant_arrow.name=Fletchroot Stalk
+entity.bee.name=Bee
+entity.solanum.name=Solanum Titanum
