@@ -9,6 +9,7 @@
     "RenderManagerMixin"
   ],
   "client": [
+    "DebugRendererCollisionBoxMixin"
   ],
   "minVersion": "0.8"
 }
