@@ -3,6 +3,7 @@ buildscript {
 		mavenCentral()
 		maven { url = "https://maven.minecraftforge.net/" }
 		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+		maven { url 'https://maven.cleanroommc.com' }
 	}
 	
 	dependencies {
@@ -24,16 +25,19 @@ compileJava {
 repositories {
 	maven { url = "https://maven.minecraftforge.net/" }
 	maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+	maven { url 'https://maven.cleanroommc.com' }
 }
 
 dependencies {
 	minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2860"
-	implementation('org.spongepowered:mixin:0.8.5') {
-		exclude module: 'launchwrapper'
-		exclude module: 'guava'
-		exclude module: 'gson'
-		exclude module: 'commons-io'
-	}
+
+	implementation 'zone.rong:mixinbooter:8.9'
+//	implementation('org.spongepowered:mixin:0.8.5') {
+//		exclude module: 'launchwrapper'
+//		exclude module: 'guava'
+//		exclude module: 'gson'
+//		exclude module: 'commons-io'
+//	}
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
@@ -50,6 +54,9 @@ minecraft {
 		"client" {
 			workingDirectory file("./run")
 			mods { "${project.name}" { source sourceSets.main } }
+			property 'mixin.env.disableRefMap', 'true'
+			arg '--tweakClass'
+			arg 'org.spongepowered.asm.launch.MixinTweaker'
 
 		}
 		
@@ -74,9 +81,7 @@ jar {
 	manifest.attributes(
 			'ForceLoadAsMod': 'true',
 			'FMLCorePluginContainsFMLMod': 'true',
-			'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-			"MixinConfigs": "orespark.mixins.json",
-			'TweakOrder': '0'
+			"MixinConfigs": "orespark.mixins.json"
 	)
 }
 
