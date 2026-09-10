@@ -64,9 +64,44 @@ public class RenderManagerMixin {
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder bufferbuilder = tessellator.getBuffer();
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                    for (int i = 0; i < 8; i++) {
-                        bufferbuilder.pos(points[i][0] + d0,points[i][1] + d1,points[i][2] + d2).color(1.0f,0.55f,0.0f,1.0f).endVertex();
-                    }
+
+                    bufferbuilder.pos(points[0][0] + d0 - renderPosX,points[0][1] + d1 - renderPosY,points[0][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[1][0] + d0 - renderPosX,points[1][1] + d1 - renderPosY,points[1][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[1][0] + d0 - renderPosX,points[1][1] + d1 - renderPosY,points[1][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[2][0] + d0 - renderPosX,points[2][1] + d1 - renderPosY,points[2][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[2][0] + d0 - renderPosX,points[2][1] + d1 - renderPosY,points[2][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[0][0] + d0 - renderPosX,points[0][1] + d1 - renderPosY,points[0][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[5][0] + d0 - renderPosX,points[5][1] + d1 - renderPosY,points[5][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[5][0] + d0 - renderPosX,points[5][1] + d1 - renderPosY,points[5][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[0][0] + d0 - renderPosX,points[0][1] + d1 - renderPosY,points[0][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[1][0] + d0 - renderPosX,points[1][1] + d1 - renderPosY,points[1][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[5][0] + d0 - renderPosX,points[5][1] + d1 - renderPosY,points[5][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[2][0] + d0 - renderPosX,points[2][1] + d1 - renderPosY,points[2][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+                    bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+
+
                     tessellator.draw();
                 }
                 else {
@@ -85,8 +120,8 @@ public class RenderManagerMixin {
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         Vec3d vec3d = entityIn.getLook(partialTicks);
         bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(x, y + (double)entityIn.getEyeHeight(), z).color(0, 0, 255, 255).endVertex();
-        bufferbuilder.pos(x + vec3d.x * 2.0D, y + (double)entityIn.getEyeHeight() + vec3d.y * 2.0D, z + vec3d.z * 2.0D).color(0, 0, 255, 255).endVertex();
+        bufferbuilder.pos(x, y + (double)entityIn.getEyeHeight(), z).color(1.0f, 0.7f, 0, 1.0f).endVertex();
+        bufferbuilder.pos(x + vec3d.x * (f * 2 + 0.5f), y + (double)entityIn.getEyeHeight() + vec3d.y * 2.0D, z + vec3d.z * (f * 2 + 0.5f)).color(255, 120, 120, 255).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();

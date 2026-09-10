@@ -87,7 +87,7 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
         super.onLivingUpdate();
 
         test.setPosition(posX,posY,posZ);
-        test.setRotation(0,0,Math.PI / 4d);
+        test.setRotation(0,0,0);
 
 //        switch (getState()) {
 //            case IDLE:
