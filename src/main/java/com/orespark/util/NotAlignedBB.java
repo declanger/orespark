@@ -120,49 +120,49 @@ public class NotAlignedBB extends AxisAlignedBB {
         // multiply both by the transposed matrix to reverse the rotation of the bb
         p1 = new Vec3d(p1.x * matrix.m00 + p1.y * matrix.m10 + p1.z * matrix.m20,
                 p1.x * matrix.m01 + p1.y * matrix.m11 + p1.z * matrix.m21,
-                p1.x * matrix.m02 + p1.y * matrix.m12 + p1.z * matrix.m22);
+                p1.x * matrix.m02 + p1.y * matrix.m12 + p1.z * matrix.m22).add(pos);
         p2 = new Vec3d(p2.x * matrix.m00 + p2.y * matrix.m10 + p2.z * matrix.m20,
                 p2.x * matrix.m01 + p2.y * matrix.m11 + p2.z * matrix.m21,
-                p2.x * matrix.m02 + p2.y * matrix.m12 + p2.z * matrix.m22);
+                p2.x * matrix.m02 + p2.y * matrix.m12 + p2.z * matrix.m22).add(pos);
 
 
         // Front and back faces
-        Vec3d close = collideWithXPlane(pos.x + offsetX + width / 2f, from, to);
-        Vec3d far = collideWithXPlane(pos.x + offsetX - width / 2f, from, to);
+        Vec3d close = collideWithXPlane(pos.x + offsetX + width / 2f, p1,p2);
+        Vec3d far = collideWithXPlane(pos.x + offsetX - width / 2f, p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.EAST;
         }
 
         // Bottom face
-        far = collideWithYPlane(pos.y + offsetY - height / 2f,from,to);
+        far = collideWithYPlane(pos.y + offsetY - height / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.DOWN;
         }
 
         // Top face
-        far = collideWithYPlane(pos.y + offsetY + height / 2f,from,to);
+        far = collideWithYPlane(pos.y + offsetY + height / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.UP;
         }
 
         // West face
-        far = collideWithZPlane(pos.z + offsetZ - depth / 2f,from,to);
+        far = collideWithZPlane(pos.z + offsetZ - depth / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.WEST;
         }
 
         // East face
-        far = collideWithZPlane(pos.z + offsetZ + depth / 2f,from,to);
+        far = collideWithZPlane(pos.z + offsetZ + depth / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.EAST;
         }
