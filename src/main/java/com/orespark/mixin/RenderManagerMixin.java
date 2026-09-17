@@ -60,49 +60,37 @@ public class RenderManagerMixin {
                 double d2 = (entity.posZ - entity.prevPosZ) * (double)partialTicks;
                 AxisAlignedBB axisalignedbb1 = entity.getEntityBoundingBox();
                 if (axisalignedbb1 instanceof NotAlignedBB) {
-                    double[][] points = ((NotAlignedBB) axisalignedbb1).getCorners();
+                    NotAlignedBB bb = (NotAlignedBB) axisalignedbb1;
+                    double[][] points = bb.getCorners();
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder bufferbuilder = tessellator.getBuffer();
                     bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
 
+                    // Top square
                     bufferbuilder.pos(points[0][0] + d0 - renderPosX,points[0][1] + d1 - renderPosY,points[0][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
                     bufferbuilder.pos(points[1][0] + d0 - renderPosX,points[1][1] + d1 - renderPosY,points[1][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
-                    bufferbuilder.pos(points[1][0] + d0 - renderPosX,points[1][1] + d1 - renderPosY,points[1][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
                     bufferbuilder.pos(points[2][0] + d0 - renderPosX,points[2][1] + d1 - renderPosY,points[2][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
-                    bufferbuilder.pos(points[2][0] + d0 - renderPosX,points[2][1] + d1 - renderPosY,points[2][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-                    bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
                     bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
                     bufferbuilder.pos(points[0][0] + d0 - renderPosX,points[0][1] + d1 - renderPosY,points[0][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
+                    // Bottom square
                     bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
                     bufferbuilder.pos(points[5][0] + d0 - renderPosX,points[5][1] + d1 - renderPosY,points[5][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
+                    bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
+                    // Zig zag to make the vertical lines
                     bufferbuilder.pos(points[5][0] + d0 - renderPosX,points[5][1] + d1 - renderPosY,points[5][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-                    bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
-                    bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-                    bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
-                    bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-                    bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
-                    bufferbuilder.pos(points[0][0] + d0 - renderPosX,points[0][1] + d1 - renderPosY,points[0][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-                    bufferbuilder.pos(points[4][0] + d0 - renderPosX,points[4][1] + d1 - renderPosY,points[4][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
                     bufferbuilder.pos(points[1][0] + d0 - renderPosX,points[1][1] + d1 - renderPosY,points[1][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-                    bufferbuilder.pos(points[5][0] + d0 - renderPosX,points[5][1] + d1 - renderPosY,points[5][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
                     bufferbuilder.pos(points[2][0] + d0 - renderPosX,points[2][1] + d1 - renderPosY,points[2][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
                     bufferbuilder.pos(points[6][0] + d0 - renderPosX,points[6][1] + d1 - renderPosY,points[6][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
-                    bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
                     bufferbuilder.pos(points[7][0] + d0 - renderPosX,points[7][1] + d1 - renderPosY,points[7][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
-
+                    bufferbuilder.pos(points[3][0] + d0 - renderPosX,points[3][1] + d1 - renderPosY,points[3][2] + d2 - renderPosZ).color(0.0f,0.7f,1.0f,1.0f).endVertex();
 
                     tessellator.draw();
+
+                    RenderGlobal.renderFilledBox(bb.pos.x + d0 - renderPosX - 0.03,bb.pos.y + d1 - renderPosY - 0.03,bb.pos.z + d2 - renderPosZ - 0.03,bb.pos.x + d0 - renderPosX + 0.03,bb.pos.y + d1 - renderPosY + 0.03,bb.pos.z + d2 - renderPosZ + 0.03, 1f,0,0,0.5f);
+                    //RenderGlobal.renderFilledBox(bb.pos.x + d0 - renderPosX,bb.pos.y + d1 - renderPosY,bb.pos.z + d2 - renderPosZ,points[8][0] + d0 - renderPosX,points[8][1] + d1 - renderPosY,points[8][2] + d2 - renderPosZ, 1f,0,1f,1f);
+                    RenderGlobal.renderFilledBox(points[8][0] + d0 - renderPosX - 0.05,points[8][1] + d1 - renderPosY - 0.05,points[8][2] + d2 - renderPosZ - 0.05,points[8][0] + d0 - renderPosX + 0.05,points[8][1] + d1 - renderPosY + 0.05,points[8][2] + d2 - renderPosZ + 0.05, 0f,0,1f,0.5f);
                 }
                 else {
                     RenderGlobal.drawBoundingBox(axisalignedbb1.minX - this.renderPosX + d0, axisalignedbb1.minY - this.renderPosY + d1, axisalignedbb1.minZ - this.renderPosZ + d2, axisalignedbb1.maxX - this.renderPosX + d0, axisalignedbb1.maxY - this.renderPosY + d1, axisalignedbb1.maxZ - this.renderPosZ + d2, 0.25F, 1.0F, 0.0F, 1.0F);

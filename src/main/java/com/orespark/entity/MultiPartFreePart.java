@@ -27,10 +27,6 @@ public class MultiPartFreePart extends MultiPartEntityPart {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        double[][] corners = ((NotAlignedBB)this.getEntityBoundingBox()).getCorners();
-        for (int i = 0; i < 8; i++) {
-            world.spawnParticle(EnumParticleTypes.WATER_BUBBLE,corners[i][0],corners[i][1],corners[i][2],0,0,0);
-        }
     }
 
     private void setSize(float width, float height, float depth)
@@ -50,6 +46,11 @@ public class MultiPartFreePart extends MultiPartEntityPart {
         if (this.isAddedToWorld() && !this.world.isRemote) this.world.updateEntityWithOptionalForce(this, false); // Forge - Process chunk registration after moving.
 
         this.setEntityBoundingBox(new NotAlignedBB(width,height,depth,offsetX,offsetY,offsetZ,rotX,rotY,rotZ,new Vec3d(posX,posY,posZ)));
+    }
+
+    public void setLocationAndAngles(double x, double y, double z, float rx, float ry, float rz) {
+        setPosition(x,y,z);
+        setRotation(rx,ry,rz);
     }
 
     public void setRotation(double x, double y, double z)

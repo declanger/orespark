@@ -24,19 +24,17 @@ import javax.annotation.Nullable;
 public class EntitySolanum extends EntityMob implements IEntityMultiPart {
 
     public MultiPartEntityPart[] entityParts;
-//    public MultiPartEntityPart stem1 = new MultiPartEntityPart(this,"stem1",14f/16f,21f/16f);
-//    public MultiPartEntityPart stem2 = new MultiPartEntityPart(this,"stem2",12f/16f,12f/16f);
-//    public MultiPartEntityPart stem3 = new MultiPartEntityPart(this,"stem3",10f/16f,17f/16f);
-//    public MultiPartEntityPart stem4 = new MultiPartEntityPart(this,"stem4",8f/16f,21f/16f);
-//    public MultiPartEntityPart stem5 = new MultiPartEntityPart(this,"stem5",6f/16f,20f/16f);
-//    public MultiPartEntityPart neck = new MultiPartEntityPart(this,"neck",18f/16f,6f/16f);
-//    public MultiPartEntityPart head = new MultiPartEntityPart(this,"head",12f/16f,24f/16f);
-//    public MultiPartOblongPart north = new MultiPartOblongPart(this,"north",40f/16f,2f/16f, 18f/16f);
-//    public MultiPartOblongPart south = new MultiPartOblongPart(this,"south",40f/16f,2f/16f, 18f/16f);
-//    public MultiPartOblongPart east = new MultiPartOblongPart(this,"east",18f/16f,2f/16f, 40f/16f);
-//    public MultiPartOblongPart west = new MultiPartOblongPart(this,"west",18f/16f,2f/16f, 40f/16f);
-
-    public MultiPartFreePart test = new MultiPartFreePart(this,"test",1f,1f,1f,0,0,0);
+    public MultiPartEntityPart stem1 = new MultiPartEntityPart(this,"stem1",14f/16f,21f/16f);
+    public MultiPartEntityPart stem2 = new MultiPartEntityPart(this,"stem2",12f/16f,12f/16f);
+    public MultiPartEntityPart stem3 = new MultiPartEntityPart(this,"stem3",10f/16f,17f/16f);
+    public MultiPartEntityPart stem4 = new MultiPartEntityPart(this,"stem4",8f/16f,21f/16f);
+    public MultiPartEntityPart stem5 = new MultiPartEntityPart(this,"stem5",6f/16f,20f/16f);
+    public MultiPartEntityPart neck = new MultiPartEntityPart(this,"neck",18f/16f,6f/16f);
+    public MultiPartEntityPart head = new MultiPartEntityPart(this,"head",12f/16f,24f/16f);
+    public MultiPartFreePart north = new MultiPartFreePart(this,"north",40f/16f,2f/16f, 18f/16f,20f/16f,0,0);
+    public MultiPartFreePart south = new MultiPartFreePart(this,"south",40f/16f,2f/16f, 18f/16f,-20/16f,0,0);
+    public MultiPartFreePart east = new MultiPartFreePart(this,"east",18f/16f,2f/16f, 40f/16f,0,0,20f/16f);
+    public MultiPartFreePart west = new MultiPartFreePart(this,"west",18f/16f,2f/16f, 40f/16f,0,0,-20f/16f);
 
     private static final DataParameter<Integer> STATE = EntityDataManager.createKey(EntitySolanum.class, DataSerializers.VARINT);
 
@@ -52,11 +50,11 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
 
     public EntitySolanum(World world) {
         super(world);
-//        entityParts = new MultiPartEntityPart[]{stem1,stem2,stem3,stem4,stem5,neck,head,north,south,east,west};
-        entityParts = new MultiPartEntityPart[]{test};
+        entityParts = new MultiPartEntityPart[]{stem1,stem2,stem3,stem4,stem5,neck,head,north,south,east,west};
         this.setSize(4f,7f);
         this.ignoreFrustumCheck = true;
         this.experienceValue = 50;
+        setState(IDLE);
     }
 
     @Override
@@ -67,7 +65,7 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
     @Override
     protected void entityInit() {
         super.entityInit();
-        this.dataManager.register(STATE,6);
+        this.dataManager.register(STATE,0);
     }
 
     @Override
@@ -82,47 +80,61 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
         super.onUpdate();
     }
 
+    public void setState(int state) {
+        dataManager.set(STATE, state);
+        switch (state) {
+            case IDLE:
+                Orespark.LOGGER.error("STATE ASET");
+                break;
+            case OPEN:
+                north.setPosition(this.posX + 1.8125f, this.posY + 4f, this.posZ);
+                south.setPosition(this.posX - 1.8125f, this.posY + 4f, this.posZ);
+                east.setPosition(this.posX, this.posY + 4f, this.posZ + 1.8125f);
+                west.setPosition(this.posX, this.posY + 4f, this.posZ - 1.8125f);
+                break;
+            default:
+                Orespark.LOGGER.error("Solanum in unexpected state");
+                break;
+        }
+    }
+
     @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
-        test.setPosition(posX,posY,posZ);
-        test.setRotation(0,0,0);
+        switch (getState()) {
+            case IDLE:
+                stem1.setLocationAndAngles(this.posX,this.posY - 0.625f,this.posZ,0,0);
+                stem2.setLocationAndAngles(this.posX,this.posY + 0.6875f,this.posZ,0,0);
+                stem3.setLocationAndAngles(this.posX,this.posY + 1.4375f,this.posZ,0,0);
+                stem4.setLocationAndAngles(this.posX,this.posY + 2.5f,this.posZ,0,0);
+                stem5.setLocationAndAngles(this.posX,this.posY + 3.8125f,this.posZ,0,0);
+                neck.setLocationAndAngles(this.posX,this.posY + 5.0625f,this.posZ,0,0);
+                head.setLocationAndAngles(this.posX,this.posY + 5.4375f,this.posZ,0,0);
 
-//        switch (getState()) {
-//            case IDLE:
-//                stem1.setLocationAndAngles(this.posX,this.posY - 0.625f,this.posZ,0,0);
-//                stem2.setLocationAndAngles(this.posX,this.posY + 0.6875f,this.posZ,0,0);
-//                stem3.setLocationAndAngles(this.posX,this.posY + 1.4375f,this.posZ,0,0);
-//                stem4.setLocationAndAngles(this.posX,this.posY + 2.5f,this.posZ,0,0);
-//                stem5.setLocationAndAngles(this.posX,this.posY + 3.8125f,this.posZ,0,0);
-//                neck.setLocationAndAngles(this.posX,this.posY + 5.0625f,this.posZ,0,0);
-//                head.setLocationAndAngles(this.posX,this.posY + 5.4375f,this.posZ,0,0);
-//
-//                north.setLocationAndAngles(this.posX + 1.8125f,this.posY + 5.3125f,this.posZ,0,0);
-//                south.setLocationAndAngles(this.posX - 1.8125f,this.posY + 5.3125f,this.posZ,0,0);
-//                east.setLocationAndAngles(this.posX,this.posY + 5.3125f,this.posZ + 1.8125f,0,0);
-//                west.setLocationAndAngles(this.posX,this.posY + 5.3125f,this.posZ - 1.8125f,0,0);
-//                break;
-//            case OPEN:
-//                stem1.setLocationAndAngles(this.posX,this.posY - 0.625f,this.posZ,0,0);
-//                stem2.setLocationAndAngles(this.posX,this.posY + 0.6875f,this.posZ,0,0);
-//                stem3.setLocationAndAngles(this.posX,this.posY + 1.4375f,this.posZ,0,0);
-//                stem4.setLocationAndAngles(this.posX,this.posY + 2.5f,this.posZ,0,0);
-//                stem5.setLocationAndAngles(this.posX,this.posY + 3.8125f,this.posZ,0,0);
-//                neck.setLocationAndAngles(this.posX,this.posY + 4.5625f,this.posZ,0,0);
-//                head.setLocationAndAngles(this.posX,this.posY + 5.4375f,this.posZ,0,0);
-//
-//
-//                north.setLocationAndAngles(this.posX + 1.8125f,this.posY + 4f,this.posZ,0,0);
-//                south.setLocationAndAngles(this.posX - 1.8125f,this.posY + 4f,this.posZ,0,0);
-//                east.setLocationAndAngles(this.posX,this.posY + 4f,this.posZ + 1.8125f,0,0);
-//                west.setLocationAndAngles(this.posX,this.posY + 4f,this.posZ - 1.8125f,0,0);
-//                break;
-//            default:
-//                Orespark.LOGGER.error("Solanum in unexpected state");
-//                break;
-//        }
+                north.setPosition(this.posX + 0.5625f, this.posY + 5.3125f, this.posZ);
+                south.setPosition(this.posX - 0.5625f, this.posY + 5.3125f, this.posZ);
+                east.setPosition(this.posX, this.posY + 5.3125f, this.posZ + 0.5625f);
+                west.setPosition(this.posX, this.posY + 5.3125f, this.posZ - 0.5625f);
+
+                north.setRotation(0,0,0.174533);
+                south.setRotation(0,0,-0.174533);
+                east.setRotation(-0.174533,0,0);
+                west.setRotation(0.174533,0,0);
+                break;
+            case OPEN:
+                stem1.setLocationAndAngles(this.posX,this.posY - 0.625f,this.posZ,0,0);
+                stem2.setLocationAndAngles(this.posX,this.posY + 0.6875f,this.posZ,0,0);
+                stem3.setLocationAndAngles(this.posX,this.posY + 1.4375f,this.posZ,0,0);
+                stem4.setLocationAndAngles(this.posX,this.posY + 2.5f,this.posZ,0,0);
+                stem5.setLocationAndAngles(this.posX,this.posY + 3.8125f,this.posZ,0,0);
+                neck.setLocationAndAngles(this.posX,this.posY + 4.5625f,this.posZ,0,0);
+                head.setLocationAndAngles(this.posX,this.posY + 5.4375f,this.posZ,0,0);
+
+                break;
+            default:
+                break;
+        }
 
 
         for (MultiPartEntityPart part : entityParts) {
@@ -160,11 +172,11 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
             bossInfoServer.setName(getDisplayName());
         }
     }
-
     //    @Nullable
 //    @Override
 //    protected ResourceLocation getLootTable() {
 //        return OresparkUtil.mobLootTable(this);
+
 //    }
 
     @Override
@@ -242,9 +254,5 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
 
     public int getState() {
         return dataManager.get(STATE);
-    }
-
-    public void setState(int state) {
-        dataManager.set(STATE,state);
     }
 }
