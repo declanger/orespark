@@ -1,16 +1,20 @@
 package com.orespark.util;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.orespark.Orespark;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
 public class NotAlignedBB extends AxisAlignedBB {
 
-    private static final int[][] cornerMults = new int[][]{{1,1,1},{-1,1,1},{-1,1,-1},{1,1,-1},{1,-1,1},{-1,-1,1},{-1,-1,-1},{1,-1,-1}};
+    private static final int[][] cornerMults = new int[][]{{1,1,1},{-1,1,1},{-1,1,-1},{1,1,-1},{1,-1,1},{-1,-1,1},{-1,-1,-1},{1,-1,-1},{0,0,0}};
 
     public final double rotX, rotY, rotZ;
 
@@ -106,14 +110,84 @@ public class NotAlignedBB extends AxisAlignedBB {
         return Math.abs(offset.x) < width / 2d && Math.abs (offset.y) < height / 2d && Math.abs(offset.z) < depth / 2;
     }
 
+    @Nullable
+    @Override
+    public RayTraceResult calculateIntercept(Vec3d from, Vec3d to) {
+        Orespark.LOGGER.error("WORKING");
+        EnumFacing facing = EnumFacing.WEST;
+        Vec3d p1 = from.subtract(pos);
+        Vec3d p2 = to.subtract(pos);
+        // multiply both by the transposed matrix to reverse the rotation of the bb
+        p1 = new Vec3d(p1.x * matrix.m00 + p1.y * matrix.m10 + p1.z * matrix.m20,
+                p1.x * matrix.m01 + p1.y * matrix.m11 + p1.z * matrix.m21,
+                p1.x * matrix.m02 + p1.y * matrix.m12 + p1.z * matrix.m22);
+        p2 = new Vec3d(p2.x * matrix.m00 + p2.y * matrix.m10 + p2.z * matrix.m20,
+                p2.x * matrix.m01 + p2.y * matrix.m11 + p2.z * matrix.m21,
+                p2.x * matrix.m02 + p2.y * matrix.m12 + p2.z * matrix.m22);
+
+
+        // Front and back faces
+        Vec3d close = collideWithXPlane(pos.x + offsetX + width / 2f, from, to);
+        Vec3d far = collideWithXPlane(pos.x + offsetX - width / 2f, from, to);
+
+        if (far != null && isClosest(from,close,far)) {
+            close = far;
+            facing = EnumFacing.EAST;
+        }
+
+        // Bottom face
+        far = collideWithYPlane(pos.y + offsetY - height / 2f,from,to);
+
+        if (far != null && isClosest(from,close,far)) {
+            close = far;
+            facing = EnumFacing.DOWN;
+        }
+
+        // Top face
+        far = collideWithYPlane(pos.y + offsetY + height / 2f,from,to);
+
+        if (far != null && isClosest(from,close,far)) {
+            close = far;
+            facing = EnumFacing.UP;
+        }
+
+        // West face
+        far = collideWithZPlane(pos.z + offsetZ - depth / 2f,from,to);
+
+        if (far != null && isClosest(from,close,far)) {
+            close = far;
+            facing = EnumFacing.WEST;
+        }
+
+        // East face
+        far = collideWithZPlane(pos.z + offsetZ + depth / 2f,from,to);
+
+        if (far != null && isClosest(from,close,far)) {
+            close = far;
+            facing = EnumFacing.EAST;
+        }
+
+        // Rotate the facing to reverse the transposed matrix multiplication
+        float x = facing.getXOffset();
+        float y = facing.getYOffset();
+        float z = facing.getZOffset();
+
+        // turn rotated vector into facing
+        facing = EnumFacing.getFacingFromVector((float) (x * matrix.m00 + y * matrix.m10 + z * matrix.m20),
+                (float) (x * matrix.m01 + y * matrix.m11 + z * matrix.m21),
+                (float) (x * matrix.m02 + y * matrix.m12 + z * matrix.m22));
+
+        return  close == null ? null : new RayTraceResult(close,facing);
+    }
+
     public double[][] getCorners() {
-        double[][] corners = new double[8][3];
+        double[][] corners = new double[9][3];
 
         double w = width / 2f;
         double h = height / 2f;
         double d = depth / 2f;
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             double x = cornerMults[i][0] * w + offsetX;
             double y = cornerMults[i][1] * h + offsetY;
             double z = cornerMults[i][2] * d + offsetZ;
@@ -124,6 +198,65 @@ public class NotAlignedBB extends AxisAlignedBB {
         }
         return corners;
     }
+
+
+    boolean isClosest(Vec3d from, @Nullable Vec3d vec1, Vec3d vec2)
+    {
+        return vec1 == null || from.squareDistanceTo(vec2) < from.squareDistanceTo(vec1);
+    }
+
+    @Nullable
+    Vec3d collideWithXPlane(double x, Vec3d from, Vec3d to)
+    {
+        Vec3d vec3d = from.getIntermediateWithXValue(to, x);
+        return vec3d != null && this.intersectsWithYZ(vec3d) ? vec3d : null;
+    }
+
+    @Nullable
+    Vec3d collideWithYPlane(double y, Vec3d from, Vec3d to)
+    {
+        Vec3d vec3d = from.getIntermediateWithYValue(to, y);
+        return vec3d != null && this.intersectsWithXZ(vec3d) ? vec3d : null;
+    }
+
+    @Nullable
+    Vec3d collideWithZPlane(double z, Vec3d from, Vec3d to)
+    {
+        Vec3d vec3d = from.getIntermediateWithZValue(to, z);
+        return vec3d != null && this.intersectsWithXY(vec3d) ? vec3d : null;
+    }
+
+    @Override
+    public boolean intersectsWithYZ(Vec3d vec)
+    {
+        double h = height / 2d;
+        double d = depth / 2d;
+        double y = pos.y + offsetY;
+        double z = pos.z + offsetZ;
+        return vec.y >= y - h && vec.y <= y + h && vec.z >= z - d && vec.z <= z + d;
+    }
+
+    @Override
+    public boolean intersectsWithXZ(Vec3d vec)
+    {
+        double w = width / 2d;
+        double d = depth / 2d;
+        double x = pos.x + offsetX;
+        double z = pos.z + offsetZ;
+        return vec.x >= x - w && vec.x <= x - w && vec.z >= z - d && vec.z <= z + d;
+    }
+
+    @Override
+    public boolean intersectsWithXY(Vec3d vec)
+    {
+        double w = width / 2d;
+        double h = height / 2d;
+        double x = pos.x + offsetX;
+        double y = pos.y + offsetY;
+        return vec.x >= x - w && vec.x <= x + w && vec.y >= y - h && vec.y <= y + h;
+    }
+
+
 
     public NotAlignedBB(double width, double height, double depth, double rotX, double rotY, double rotZ, Vec3d pos) {
         this(width,height,depth,0,0,0,rotX,rotY,rotZ,pos);
@@ -191,5 +324,15 @@ public class NotAlignedBB extends AxisAlignedBB {
         this.rotZ = 0;
         this.pos = Vec3d.ZERO;
         this.matrix = null;
+    }
+
+    @Override
+    public Vec3d getCenter() {
+        return pos;
+    }
+
+    @Override
+    public double getAverageEdgeLength() {
+        return (width + height + depth) / 3;
     }
 }
