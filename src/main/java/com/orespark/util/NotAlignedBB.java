@@ -11,6 +11,7 @@ import net.minecraft.util.math.Vec3d;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
+import java.util.Arrays;
 
 public class NotAlignedBB extends AxisAlignedBB {
 
@@ -110,11 +111,98 @@ public class NotAlignedBB extends AxisAlignedBB {
         return Math.abs(offset.x) < width / 2d && Math.abs (offset.y) < height / 2d && Math.abs(offset.z) < depth / 2;
     }
 
+    public Vec3d getAxeX() {
+        return new Vec3d(matrix.m00, matrix.m10, matrix.m20);
+    }
+    public Vec3d getAxeY() {
+        return new Vec3d(matrix.m01, matrix.m11, matrix.m21);
+    }
+    public Vec3d getAxeZ() {
+        return new Vec3d(matrix.m02, matrix.m12, matrix.m22);
+    }
+
+    @Override
+    public boolean intersects(AxisAlignedBB other) {
+        Vec3d[] axes = new Vec3d[15];
+        Vec3d[] vertices1 = this.getVertices();
+        Vec3d[] vertices2 = null;
+
+        // normals of this bb
+        axes[0] = new Vec3d(matrix.m00,matrix.m10,matrix.m20);
+        axes[1] = new Vec3d(matrix.m01,matrix.m11,matrix.m21);
+        axes[2] = new Vec3d(matrix.m02,matrix.m12,matrix.m22);
+
+        // normals of other bb
+        if (other instanceof NotAlignedBB ) {
+            NotAlignedBB bb = (NotAlignedBB) other;
+            vertices2 = bb.getVertices();
+            axes[3] = bb.getAxeX();
+            axes[4] = bb.getAxeY();
+            axes[5] = bb.getAxeZ();
+        }
+        else {
+            vertices2 = new Vec3d[]{new Vec3d(other.maxX,other.maxY,other.maxZ),
+                    new Vec3d(other.minX,other.maxY,other.maxZ),
+                    new Vec3d(other.minX,other.maxY,other.minZ),
+                    new Vec3d(other.maxX,other.maxY,other.minZ),
+                    new Vec3d(other.maxX,other.minY,other.maxZ),
+                    new Vec3d(other.minX,other.minY,other.maxZ),
+                    new Vec3d(other.minX,other.minY,other.minZ),
+                    new Vec3d(other.maxX,other.minY,other.minZ)};
+            axes[3] = new Vec3d(1,0,0);
+            axes[4] = new Vec3d(0,1,0);
+            axes[5] = new Vec3d(0,0,1);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 3; j < 6; j++) {
+                axes[6 + i * 3 + j] = axes[i].crossProduct(axes[j]);
+            }
+        }
+
+        for (int a = 0; a < 15; a++) {
+            Vec3d axis = axes[a];
+            if (axis.lengthSquared() < 0.01) {
+                continue;
+            }
+            double min1 = axis.dotProduct(vertices1[7]);
+            double max1 = min1;
+
+            for (int v = 0; v < 7; v++) {
+                double p = axis.dotProduct(vertices1[v]);
+                if (p > max1) {
+                    max1 = p;
+                }
+                else if (p < min1) {
+                    min1 = p;
+                }
+            }
+
+            double min2 = axis.dotProduct(vertices2[7]);
+            double max2 = min1;
+
+            for (int v = 0; v < 7; v++) {
+                double p = axis.dotProduct(vertices2[v]);
+                if (p > max2) {
+                    max2 = p;
+                }
+                else if (p < min2) {
+                    min2 = p;
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public boolean intersects(double x1, double y1, double z1, double x2, double y2, double z2) {
+        return super.intersects(x1, y1, z1, x2, y2, z2);
+    }
+
     @Nullable
     @Override
     public RayTraceResult calculateIntercept(Vec3d from, Vec3d to) {
-        Orespark.LOGGER.error("WORKING");
-        EnumFacing facing = EnumFacing.WEST;
+        EnumFacing facing = null;
         Vec3d p1 = from.subtract(pos);
         Vec3d p2 = to.subtract(pos);
         // multiply both by the transposed matrix to reverse the rotation of the bb
@@ -133,6 +221,8 @@ public class NotAlignedBB extends AxisAlignedBB {
         if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.EAST;
+        } else if (close != null) {
+            facing = EnumFacing.WEST;
         }
 
         // Bottom face
@@ -167,6 +257,10 @@ public class NotAlignedBB extends AxisAlignedBB {
             facing = EnumFacing.EAST;
         }
 
+        if (facing == null) {
+            return null;
+        }
+
         // Rotate the facing to reverse the transposed matrix multiplication
         float x = facing.getXOffset();
         float y = facing.getYOffset();
@@ -177,7 +271,7 @@ public class NotAlignedBB extends AxisAlignedBB {
                 (float) (x * matrix.m01 + y * matrix.m11 + z * matrix.m21),
                 (float) (x * matrix.m02 + y * matrix.m12 + z * matrix.m22));
 
-        return  close == null ? null : new RayTraceResult(close,facing);
+        return new RayTraceResult(close,facing);
     }
 
     public double[][] getCorners() {
@@ -195,6 +289,23 @@ public class NotAlignedBB extends AxisAlignedBB {
             corners[i][0] =  x * matrix.m00 + y * matrix.m01 + z * matrix.m02 + pos.x;
             corners[i][1] =  x * matrix.m10 + y * matrix.m11 + z * matrix.m12 + pos.y;
             corners[i][2] =  x * matrix.m20 + y * matrix.m21 + z * matrix.m22 + pos.z;
+        }
+        return corners;
+    }
+
+    public Vec3d[] getVertices() {
+        Vec3d[] corners = new Vec3d[8];
+
+        double w = width / 2f;
+        double h = height / 2f;
+        double d = depth / 2f;
+
+        for (int i = 0; i < 8; i++) {
+            double x = cornerMults[i][0] * w + offsetX;
+            double y = cornerMults[i][1] * h + offsetY;
+            double z = cornerMults[i][2] * d + offsetZ;
+
+            corners[i] =  new Vec3d(x * matrix.m00 + y * matrix.m01 + z * matrix.m02 + pos.x, x * matrix.m10 + y * matrix.m11 + z * matrix.m12 + pos.y, x * matrix.m20 + y * matrix.m21 + z * matrix.m22 + pos.z);
         }
         return corners;
     }
@@ -243,7 +354,7 @@ public class NotAlignedBB extends AxisAlignedBB {
         double d = depth / 2d;
         double x = pos.x + offsetX;
         double z = pos.z + offsetZ;
-        return vec.x >= x - w && vec.x <= x - w && vec.z >= z - d && vec.z <= z + d;
+        return vec.x >= x - w && vec.x <= x + w && vec.z >= z - d && vec.z <= z + d;
     }
 
     @Override

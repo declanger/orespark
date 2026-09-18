@@ -89,7 +89,6 @@ public class RenderManagerMixin {
                     tessellator.draw();
 
                     RenderGlobal.renderFilledBox(bb.pos.x + d0 - renderPosX - 0.03,bb.pos.y + d1 - renderPosY - 0.03,bb.pos.z + d2 - renderPosZ - 0.03,bb.pos.x + d0 - renderPosX + 0.03,bb.pos.y + d1 - renderPosY + 0.03,bb.pos.z + d2 - renderPosZ + 0.03, 1f,0,0,0.5f);
-                    //RenderGlobal.renderFilledBox(bb.pos.x + d0 - renderPosX,bb.pos.y + d1 - renderPosY,bb.pos.z + d2 - renderPosZ,points[8][0] + d0 - renderPosX,points[8][1] + d1 - renderPosY,points[8][2] + d2 - renderPosZ, 1f,0,1f,1f);
                     RenderGlobal.renderFilledBox(points[8][0] + d0 - renderPosX - 0.05,points[8][1] + d1 - renderPosY - 0.05,points[8][2] + d2 - renderPosZ - 0.05,points[8][0] + d0 - renderPosX + 0.05,points[8][1] + d1 - renderPosY + 0.05,points[8][2] + d2 - renderPosZ + 0.05, 0f,0,1f,0.5f);
                 }
                 else {

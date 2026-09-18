@@ -54,7 +54,6 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
         this.setSize(4f,7f);
         this.ignoreFrustumCheck = true;
         this.experienceValue = 50;
-        setState(IDLE);
     }
 
     @Override
@@ -84,7 +83,18 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
         dataManager.set(STATE, state);
         switch (state) {
             case IDLE:
-                Orespark.LOGGER.error("STATE ASET");
+                stem1.setLocationAndAngles(this.posX,this.posY - 0.625f,this.posZ,0,0);
+                stem2.setLocationAndAngles(this.posX,this.posY + 0.6875f,this.posZ,0,0);
+                stem3.setLocationAndAngles(this.posX,this.posY + 1.4375f,this.posZ,0,0);
+                stem4.setLocationAndAngles(this.posX,this.posY + 2.5f,this.posZ,0,0);
+                stem5.setLocationAndAngles(this.posX,this.posY + 3.8125f,this.posZ,0,0);
+                neck.setLocationAndAngles(this.posX,this.posY + 5.0625f,this.posZ,0,0);
+                head.setLocationAndAngles(this.posX,this.posY + 5.4375f,this.posZ,0,0);
+
+                north.setPosition(this.posX + 0.5625f, this.posY + 5.3125f, this.posZ);
+                south.setPosition(this.posX - 0.5625f, this.posY + 5.3125f, this.posZ);
+                east.setPosition(this.posX, this.posY + 5.3125f, this.posZ + 0.5625f);
+                west.setPosition(this.posX, this.posY + 5.3125f, this.posZ - 0.5625f);
                 break;
             case OPEN:
                 north.setPosition(this.posX + 1.8125f, this.posY + 4f, this.posZ);
@@ -99,24 +109,17 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
     }
 
     @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
+        setState(IDLE);
+    }
+
+    @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
 
         switch (getState()) {
             case IDLE:
-                stem1.setLocationAndAngles(this.posX,this.posY - 0.625f,this.posZ,0,0);
-                stem2.setLocationAndAngles(this.posX,this.posY + 0.6875f,this.posZ,0,0);
-                stem3.setLocationAndAngles(this.posX,this.posY + 1.4375f,this.posZ,0,0);
-                stem4.setLocationAndAngles(this.posX,this.posY + 2.5f,this.posZ,0,0);
-                stem5.setLocationAndAngles(this.posX,this.posY + 3.8125f,this.posZ,0,0);
-                neck.setLocationAndAngles(this.posX,this.posY + 5.0625f,this.posZ,0,0);
-                head.setLocationAndAngles(this.posX,this.posY + 5.4375f,this.posZ,0,0);
-
-                north.setPosition(this.posX + 0.5625f, this.posY + 5.3125f, this.posZ);
-                south.setPosition(this.posX - 0.5625f, this.posY + 5.3125f, this.posZ);
-                east.setPosition(this.posX, this.posY + 5.3125f, this.posZ + 0.5625f);
-                west.setPosition(this.posX, this.posY + 5.3125f, this.posZ - 0.5625f);
-
                 north.setRotation(0,0,0.174533);
                 south.setRotation(0,0,-0.174533);
                 east.setRotation(-0.174533,0,0);
@@ -171,6 +174,8 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
         if (hasCustomName()) {
             bossInfoServer.setName(getDisplayName());
         }
+
+        setState(IDLE);
     }
     //    @Nullable
 //    @Override
