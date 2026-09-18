@@ -127,42 +127,42 @@ public class NotAlignedBB extends AxisAlignedBB {
 
 
         // Front and back faces
-        Vec3d close = collideWithXPlane(pos.x + offsetX + width / 2f, p1, p2);
-        Vec3d far = collideWithXPlane(pos.x + offsetX - width / 2f, p1, p2);
+        Vec3d close = collideWithXPlane(pos.x + offsetX + width / 2f, p1,p2);
+        Vec3d far = collideWithXPlane(pos.x + offsetX - width / 2f, p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.EAST;
         }
 
         // Bottom face
-        far = collideWithYPlane(pos.y + offsetY - height / 2f,from,to);
+        far = collideWithYPlane(pos.y + offsetY - height / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.DOWN;
         }
 
         // Top face
-        far = collideWithYPlane(pos.y + offsetY + height / 2f,from,to);
+        far = collideWithYPlane(pos.y + offsetY + height / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.UP;
         }
 
         // West face
-        far = collideWithZPlane(pos.z + offsetZ - depth / 2f,from,to);
+        far = collideWithZPlane(pos.z + offsetZ - depth / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.WEST;
         }
 
         // East face
-        far = collideWithZPlane(pos.z + offsetZ + depth / 2f,from,to);
+        far = collideWithZPlane(pos.z + offsetZ + depth / 2f,p1,p2);
 
-        if (far != null && isClosest(from,close,far)) {
+        if (far != null && isClosest(p1,close,far)) {
             close = far;
             facing = EnumFacing.EAST;
         }
