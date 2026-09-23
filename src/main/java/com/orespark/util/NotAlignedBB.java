@@ -155,8 +155,8 @@ public class NotAlignedBB extends AxisAlignedBB {
         }
 
         for (int i = 0; i < 3; i++) {
-            for (int j = 3; j < 6; j++) {
-                axes[6 + i * 3 + j] = axes[i].crossProduct(axes[j]);
+            for (int j = 0; j < 3; j++) {
+                axes[6 + i * 3 + j] = axes[i].crossProduct(axes[j + 3]);
             }
         }
 
@@ -190,8 +190,11 @@ public class NotAlignedBB extends AxisAlignedBB {
                     min2 = p;
                 }
             }
-
+            if (min1 > min2 && min1 < max2 || max1 > min2 && max1 < max2 || min2 > min1 && min2 < max1 || max2 > min1 && max2 < max1) {
+                return true;
+            }
         }
+        return false;
     }
 
     @Override
