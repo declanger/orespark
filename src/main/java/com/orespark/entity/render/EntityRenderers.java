@@ -78,5 +78,11 @@ public class EntityRenderers {
                 return new RenderSolanum(renderManager);
             }
         });
+        RenderingRegistry.registerEntityRenderingHandler(EntityAnt.class, new IRenderFactory<EntityAnt>() {
+            @Override
+            public Render<? super EntityAnt> createRenderFor(RenderManager manager) {
+                return new RenderAnt(manager);
+            }
+        });
     }
 }

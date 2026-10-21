@@ -8,6 +8,7 @@ import com.orespark.block.ModBlocks;
 import com.orespark.item.ModItems;
 import com.orespark.util.CustomModel;
 import com.orespark.util.ToolModel;
+import com.orespark.util.Variants;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.item.Item;
 
@@ -120,7 +121,13 @@ public class DataGenerators{
     public static void generateBlockStates() throws IOException {
         for (Field field : ModBlocks.class.getFields()) {
             if (field.getAnnotation(CustomModel.class) == null) {
-                simpleBlock(field.getName().toLowerCase());
+                Variants variants = field.getAnnotation(Variants.class);
+                if (variants == null) {
+                    simpleBlock(field.getName().toLowerCase());
+                }
+                else {
+                    variantBlock(field.getName().toLowerCase(),variants);
+                }
             }
         }
     }
@@ -169,6 +176,49 @@ public class DataGenerators{
 
         JsonObject normal = new JsonObject();
         normal.addProperty("model","cube_all");
+
+        JsonObject inventory = new JsonObject();
+        inventory.addProperty("model","cube_all");
+
+        JsonObject variants = new JsonObject();
+        variants.add("normal",normal);
+        variants.add("inventory",inventory);
+
+        model.add("variants",variants);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        FileWriter writer = new FileWriter("src/generated/resources/assets/orespark/blockstates/" + block + ".json");
+        gson.toJson(model,writer);
+        writer.close();
+    }
+    public static void variantBlock(String block, Variants variant) throws IOException {
+        JsonObject model = new JsonObject();
+        model.addProperty("forge_marker",1);
+
+        JsonObject textures = new JsonObject();
+        textures.addProperty("all",Orespark.MODID + ":blocks/" + block);
+
+        JsonObject defaults = new JsonObject();
+        defaults.add("textures",textures);
+
+        model.add("defaults",defaults);
+
+        int x = variant.x() ? 4 : 1;
+        int y = variant.y() ? 4 : 1;
+        JsonArray normal = new JsonArray();
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                JsonObject v = new JsonObject();
+                v.addProperty("model","cube_all");
+                if (y != 1) {
+                    v.addProperty("y",j * 90);
+                }
+                if (x != 1) {
+                    v.addProperty("x",i * 90);
+                }
+                normal.add(v);
+            }
+        }
 
         JsonObject inventory = new JsonObject();
         inventory.addProperty("model","cube_all");

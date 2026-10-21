@@ -11,8 +11,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ModelBee extends ModelBase {
 	private final ModelRenderer root;
-	private final ModelRenderer stinger_r1;
-	private final ModelRenderer leftWing;
+    private final ModelRenderer leftWing;
 	private final ModelRenderer rightWing;
 
 	public ModelBee() {
@@ -23,7 +22,7 @@ public class ModelBee extends ModelBase {
 		root.setRotationPoint(1.0F, 22.0F, 0.0F);
 		root.cubeList.add(new ModelBox(root, 0, 0, -2.0F, 0.0F, -1.5F, 2, 2, 3, 0.0F, false));
 
-		stinger_r1 = new ModelRenderer(this);
+        ModelRenderer stinger_r1 = new ModelRenderer(this);
 		stinger_r1.setRotationPoint(-1.0F, 0.9F, 1.15F);
 		root.addChild(stinger_r1);
 		setRotationAngle(stinger_r1, -0.7854F, 0.6545F, 1.5708F);

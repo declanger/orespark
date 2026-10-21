@@ -1,0 +1,19 @@
+package com.orespark.util;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value={FIELD})
+public @interface Variants {
+
+    boolean x() default false;
+
+    boolean y() default false;
+}
+

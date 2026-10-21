@@ -111,7 +111,7 @@ public class EntitySolanum extends EntityMob implements IEntityMultiPart {
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        setState(IDLE);
+        setState(CLOSED);
     }
 
     @Override

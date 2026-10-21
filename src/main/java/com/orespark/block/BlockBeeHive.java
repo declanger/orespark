@@ -29,6 +29,7 @@ public class BlockBeeHive extends BlockBase {
     public BlockBeeHive(String name) {
         super(Material.WOOD, name);
         setSoundType(SoundType.WOOD);
+        setHardness(0.75f);
     }
 
     @Override

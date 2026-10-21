@@ -5,6 +5,7 @@ import com.orespark.block.entity.BlockFletchrootCrop;
 import com.orespark.util.CustomModel;
 import com.orespark.util.IconItemBlock;
 import com.orespark.util.NoItemBlock;
+import com.orespark.util.Variants;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,6 +20,12 @@ public class ModBlocks {
     public static BlockOre RUBY_ORE = new BlockOre("ruby_ore").setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     public static BlockBase RUBY_BLOCK = new BlockBase(Material.ROCK, "ruby_block").setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     public static BlockCrucible CRUCIBLE = new BlockCrucible(Material.IRON, "crucible");
+
+    //@Variants(x = true, y = true)
+    public static BlockBase MOUND = new BlockBase(Material.ROCK,"mound").setHardness(3.5f).setToolLevel("pickaxe",2);
+    public static BlockBase PERFORATED_MOUND = new BlockBase(Material.ROCK,"perforated_mound").setHardness(8f).setToolLevel("pickaxe",2);
+    public static BlockBase MOUND_DEEP = new BlockBase(Material.ROCK,"mound_deep").setBlockUnbreakable();
+    public static BlockBase PERFORATED_MOUND_DEEP = new BlockBase(Material.ROCK,"perforated_mound_deep").setBlockUnbreakable();
 
     @CustomModel
     public static BlockBeeHive BEEHIVE = new BlockBeeHive("beehive");

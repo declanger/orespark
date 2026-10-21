@@ -22,6 +22,8 @@ public class ModEntities {
         registerEntity("plant_arrow", EntityPlantArrow.class,trackingRange);
         registerEntity("bee", EntityBee.class,trackingRange);
         registerEntity("solanum", EntitySolanum.class,trackingRange);
+        registerEntity("ant",EntityAnt.class,trackingRange);
+        registerEntity("termite",EntityTermite.class,trackingRange);
     }
 
     private static void registerEntity(String name, Class<? extends Entity> entity, int trackingRange) {
