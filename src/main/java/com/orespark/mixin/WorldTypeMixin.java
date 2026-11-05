@@ -20,7 +20,6 @@ public class WorldTypeMixin {
 
     @Inject(method = "getChunkGenerator(Lnet/minecraft/world/World;Ljava/lang/String;)Lnet/minecraft/world/gen/IChunkGenerator;", at = @At("HEAD"), remap = false, cancellable = true)
     private void getChunkGenerator(World world, String generatorOptions, CallbackInfoReturnable<IChunkGenerator> cir) {
-        Orespark.LOGGER.info("GOYIM EXTINCTION BOMB");
         WorldType thiz = (WorldType) (Object) this;
         if (thiz == FLAT) cir.setReturnValue(new ChunkGeneratorFlat(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled(), generatorOptions));
         if (thiz == DEBUG_ALL_BLOCK_STATES) cir.setReturnValue(new ChunkGeneratorDebug(world));

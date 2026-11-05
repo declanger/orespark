@@ -1,67 +1,198 @@
 package com.orespark.world;
 
-import com.orespark.Orespark;
-
-import java.util.Arrays;
-import java.util.Random;
+import net.minecraft.util.math.MathHelper;
 
 public class PerlinNoiseGenerator {
 
-    private final Random rand;
-
     private final long seed;
-
     private final int scaleX, scaleZ;
-
-    private final double amplitude;
+    protected final double amplitude;
 
     public PerlinNoiseGenerator(long seed, int scaleX, int scaleZ, double amplitude) {
         this.seed = seed;
         this.scaleX = scaleX;
         this.scaleZ = scaleZ;
         this.amplitude = amplitude;
-
-        rand = new Random();
     }
 
+    // Stateless hash-based pseudo-random gradient generator (thread-safe)
     private double[] getVec(int gridX, int gridZ) {
-        rand.setSeed(seed + (long)gridX * 341873128712L + (long)gridZ * 132897987541L);
-        double vx = rand.nextDouble() * 2d - 1d;
-        double vz = rand.nextDouble() * 2d - 1d;
-        double l = Math.sqrt(vx*vx + vz*vz);
-        if (l == 0) {
-            return new double[]{0.5,0.5};
-        }
-        double[] vec = new double[]{vx/l,vz/l};
-        return vec;
+        long h = seed ^ ((long) gridX * 341873128712L) ^ ((long) gridZ * 132897987541L);
+        h = (h ^ (h >>> 30)) * 0xbf58476d1ce4e5b9L;
+        h = (h ^ (h >>> 27)) * 0x94d049bb133111ebL;
+        h = h ^ (h >>> 31);
+
+        float angle = (h & 0xFFFFFF) / (float) 0xFFFFFF * (float) Math.PI * 2.0f;
+        return new double[]{MathHelper.cos(angle), MathHelper.sin(angle)};
+    }
+
+    // Perlin fade function (6t^5 - 15t^4 + 10t^3) for smooth C2 continuity
+    protected double fade(double t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
+    }
+
+    private double lerp(double a, double b, double t) {
+        return a + t * (b - a);
+    }
+
+    protected double applyTransformations(double value) {
+        return value * amplitude;
     }
 
     public double getValue(int blockX, int blockZ) {
-        int gridX = (int) Math.floor(blockX / (double) scaleX);
-        int gridZ = (int) Math.floor(blockZ / (double) scaleZ);
-        double[][] gridVecs = new double[][]{getVec(gridX,gridZ),getVec(gridX+1,gridZ),getVec(gridX+1,gridZ+1),getVec(gridX,gridZ + 1)};
-        double[][] diffVecs = new double[][]{
-                new double[]{blockX - gridX * scaleX,blockZ - gridZ * scaleZ},
-                new double[]{blockX - (gridX+1) * scaleX,blockZ - gridZ * scaleZ},
-                new double[]{blockX - (gridX+1) * scaleX,blockZ - (gridZ+1) * scaleZ},
-                new double[]{blockX - gridX * scaleX,blockZ - (gridZ+1) * scaleZ}
-        };
-        for (int i = 0; i < 4; i++) {
-            double l = Math.sqrt(diffVecs[i][0] * diffVecs[i][0] + diffVecs[i][1] * diffVecs[i][1]);
-            if (l == 0) {continue;}
-            diffVecs[i][0] /= l;
-            diffVecs[i][1] /= l;
-        }
-        double[] dots = new double[]{
-                gridVecs[0][0] * diffVecs[0][0] + gridVecs[0][1] * diffVecs[0][1],
-                gridVecs[1][0] * diffVecs[1][0] + gridVecs[1][1] * diffVecs[1][1],
-                gridVecs[2][0] * diffVecs[2][0] + gridVecs[2][1] * diffVecs[2][1],
-                gridVecs[3][0] * diffVecs[3][0] + gridVecs[3][1] * diffVecs[3][1]
-        };
-        double tx = Math.abs(blockX % scaleX) / (double) (scaleX-1);
-        double tz = Math.abs(blockZ % scaleZ) / (double) (scaleZ-1);
+        // Determine grid cell indices (handles negative coordinates safely)
+        int gridX = Math.floorDiv(blockX, scaleX);
+        int gridZ = Math.floorDiv(blockZ, scaleZ);
 
-        double value = ((1d-tz) * (tx * dots[1] + (1d-tx) * dots[0]) + (tz) * (tx * dots[2] + (1-tx) * dots[3])) * amplitude;
-        return value;
+        // Local fractional coordinates within the cell [0.0, 1.0)
+        double localX = (blockX - gridX * scaleX) / (double) scaleX;
+        double localZ = (blockZ - gridZ * scaleZ) / (double) scaleZ;
+
+        // Fetch gradient vectors for the 4 corners of the cell
+        double[] g00 = getVec(gridX, gridZ);
+        double[] g10 = getVec(gridX + 1, gridZ);
+        double[] g11 = getVec(gridX + 1, gridZ + 1);
+        double[] g01 = getVec(gridX, gridZ + 1);
+
+        // Unnormalized distance vectors from the 4 corners to the sample point
+        double[] d00 = {localX, localZ};
+        double[] d10 = {localX - 1.0, localZ};
+        double[] d11 = {localX - 1.0, localZ - 1.0};
+        double[] d01 = {localX, localZ - 1.0};
+
+        // Compute dot products (Gradient dot Distance)
+        double dot00 = g00[0] * d00[0] + g00[1] * d00[1];
+        double dot10 = g10[0] * d10[0] + g10[1] * d10[1];
+        double dot11 = g11[0] * d11[0] + g11[1] * d11[1];
+        double dot01 = g01[0] * d01[0] + g01[1] * d01[1];
+
+        // Apply fade curves to smooth the interpolation weights
+        double tx = fade(localX);
+        double tz = fade(localZ);
+
+        // Bilinear interpolation of dot products
+        double nx0 = lerp(dot00, dot10, tx);
+        double nx1 = lerp(dot01, dot11, tx);
+        double value = lerp(nx0, nx1, tz);
+
+        return applyTransformations(value);
+    }
+
+    public double[] getChunkValues(int chunkX, int chunkZ) {
+        int minGridX = Math.floorDiv(chunkX * 16, scaleX);
+        int minGridZ = Math.floorDiv(chunkZ * 16, scaleZ);
+
+        int maxGridX = Math.floorDiv(chunkX * 16 + 15, scaleX);
+        int maxGridZ = Math.floorDiv(chunkZ * 16 + 15, scaleZ);
+
+        double[] values = new double[256];
+        for (int gridX = minGridX; gridX <= maxGridX; gridX++) {
+            for (int gridZ = minGridZ; gridZ <= maxGridZ; gridZ++) {
+                fillGridValues(values, gridX, gridZ, chunkX, chunkZ);
+            }
+        }
+        return values;
+    }
+
+    public void fillGridValues(double[] values, int gridX, int gridZ, int chunkX, int chunkZ) {
+        // Fetch gradient vectors for the 4 corners of the cell
+        double[] g00 = getVec(gridX, gridZ);
+        double[] g10 = getVec(gridX + 1, gridZ);
+        double[] g11 = getVec(gridX + 1, gridZ + 1);
+        double[] g01 = getVec(gridX, gridZ + 1);
+
+        // Find lower bounds (inclusize)
+        int lowerBoundX = Math.max(chunkX * 16, gridX * scaleX);
+        int lowerBoundZ = Math.max(chunkZ * 16, gridZ * scaleZ);
+
+        // Find upper bounds (exclusive) of generation
+        int upperBoundX = Math.min(chunkX * 16 + 16, (gridX + 1) * scaleX);
+        int upperBoundZ = Math.min(chunkZ * 16 + 16, (gridZ + 1) * scaleZ);
+
+        for (int x = lowerBoundX; x < upperBoundX; x++) {
+            double localX = (x - gridX * scaleX) / (double) scaleX;
+            for (int z = lowerBoundZ; z < upperBoundZ; z++) {
+                double localZ = (z - gridZ * scaleZ) / (double) scaleZ;
+
+                // Get Difference Vectors
+                double[] d00 = {localX, localZ};
+                double[] d10 = {localX - 1.0, localZ};
+                double[] d11 = {localX - 1.0, localZ - 1.0};
+                double[] d01 = {localX, localZ - 1.0};
+
+                // Compute Dot Products
+                double dot00 = g00[0] * d00[0] + g00[1] * d00[1];
+                double dot10 = g10[0] * d10[0] + g10[1] * d10[1];
+                double dot11 = g11[0] * d11[0] + g11[1] * d11[1];
+                double dot01 = g01[0] * d01[0] + g01[1] * d01[1];
+
+                // Apply fade curves to smooth the interpolation weights
+                double tx = fade(localX);
+                double tz = fade(localZ);
+
+                // Bilinear interpolation of dot products
+                double nx0 = lerp(dot00, dot10, tx);
+                double nx1 = lerp(dot01, dot11, tx);
+                values[(x - chunkX * 16) * 16 + (z - chunkZ * 16)] = applyTransformations(lerp(nx0, nx1, tz));
+            }
+        }
+    }
+    public double[] addChunkValues(double[] values, int chunkX, int chunkZ) {
+        int minGridX = Math.floorDiv(chunkX * 16, scaleX);
+        int minGridZ = Math.floorDiv(chunkZ * 16, scaleZ);
+
+        int maxGridX = Math.floorDiv(chunkX * 16 + 15, scaleX);
+        int maxGridZ = Math.floorDiv(chunkZ * 16 + 15, scaleZ);
+
+        for (int gridX = minGridX; gridX <= maxGridX; gridX++) {
+            for (int gridZ = minGridZ; gridZ <= maxGridZ; gridZ++) {
+                addGridValues(values, gridX, gridZ, chunkX, chunkZ);
+            }
+        }
+        return values;
+    }
+
+    public void addGridValues(double[] values, int gridX, int gridZ, int chunkX, int chunkZ) {
+        // Fetch gradient vectors for the 4 corners of the cell
+        double[] g00 = getVec(gridX, gridZ);
+        double[] g10 = getVec(gridX + 1, gridZ);
+        double[] g11 = getVec(gridX + 1, gridZ + 1);
+        double[] g01 = getVec(gridX, gridZ + 1);
+
+        // Find lower bounds (inclusize)
+        int lowerBoundX = Math.max(chunkX * 16, gridX * scaleX);
+        int lowerBoundZ = Math.max(chunkZ * 16, gridZ * scaleZ);
+
+        // Find upper bounds (exclusive) of generation
+        int upperBoundX = Math.min(chunkX * 16 + 16, (gridX + 1) * scaleX);
+        int upperBoundZ = Math.min(chunkZ * 16 + 16, (gridZ + 1) * scaleZ);
+
+        for (int x = lowerBoundX; x < upperBoundX; x++) {
+            double localX = (x - gridX * scaleX) / (double) scaleX;
+            for (int z = lowerBoundZ; z < upperBoundZ; z++) {
+                double localZ = (z - gridZ * scaleZ) / (double) scaleZ;
+
+                // Get Difference Vectors
+                double[] d00 = {localX, localZ};
+                double[] d10 = {localX - 1.0, localZ};
+                double[] d11 = {localX - 1.0, localZ - 1.0};
+                double[] d01 = {localX, localZ - 1.0};
+
+                // Compute Dot Products
+                double dot00 = g00[0] * d00[0] + g00[1] * d00[1];
+                double dot10 = g10[0] * d10[0] + g10[1] * d10[1];
+                double dot11 = g11[0] * d11[0] + g11[1] * d11[1];
+                double dot01 = g01[0] * d01[0] + g01[1] * d01[1];
+
+                // Apply fade curves to smooth the interpolation weights
+                double tx = fade(localX);
+                double tz = fade(localZ);
+
+                // Bilinear interpolation of dot products
+                double nx0 = lerp(dot00, dot10, tx);
+                double nx1 = lerp(dot01, dot11, tx);
+                values[(x - chunkX * 16) * 16 + (z - chunkZ * 16)] += applyTransformations(lerp(nx0, nx1, tz));
+            }
+        }
     }
 }

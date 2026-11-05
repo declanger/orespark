@@ -1,10 +1,8 @@
 package com.orespark.world;
 
-import com.orespark.Orespark;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -12,7 +10,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.NoiseGeneratorOctaves;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -25,12 +22,27 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
     private final World world;
     private final long seed;
 
-    private final NoiseGeneratorOctaves noiseGeneratorOctaves;
-    private final PerlinNoiseGenerator perlinNoiseGenerator;
+    private final PerlinNoiseGenerator baseLayerNoise;
+
+    private final OctaveNoiseGenerator hillLayerNoise;
+    private final PerlinNoiseGenerator hillLayerMask;
+
+    private final RadialPatternGenerator mountainLayerPattern;
+    private final ClippedPerlinNoiseGenerator mountainLayerMask;
+    private final OctaveNoiseGenerator mountainLayerNoise;
+
+    private final VoronoiNoiseGenerator riverLayerMask;
+    private final PerlinNoiseGenerator riverLayerNoise;
+    private final KenzoNoiseGenerator riverTest;
 
     private double[] chunkHeight;
     private double[] chunkTemp;
     private double[] chunkLushness;
+
+    private final IBlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
+    private final IBlockState STONE = Blocks.STONE.getDefaultState();
+    private final IBlockState GRASS = Blocks.GRASS.getDefaultState();
+    private final IBlockState SNOW = Blocks.SNOW.getDefaultState();
 
     private final IBlockState[] debugBlocks = new IBlockState[]{
             Blocks.BEDROCK.getDefaultState(),
@@ -42,22 +54,24 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
             Blocks.STAINED_GLASS.getStateFromMeta(12)
     };
 
-    private final IBlockState[] visualizer = new IBlockState[]{
-            Blocks.CONCRETE.getStateFromMeta(15),
-            Blocks.CONCRETE.getStateFromMeta(7),
-            Blocks.STAINED_HARDENED_CLAY.getStateFromMeta(9),
-            Blocks.CONCRETE.getStateFromMeta(8),
-            Blocks.IRON_BLOCK.getStateFromMeta(0)
-    };
-
     public ChunkGeneratorSurface(World world, long seed) {
         this.world = world;
         this.seed = seed;
 
         rand = new Random(seed);
 
-        perlinNoiseGenerator = new PerlinNoiseGenerator(seed,32,32,2.49d);
-        noiseGeneratorOctaves = new NoiseGeneratorOctaves(rand,5);
+        baseLayerNoise = new PerlinNoiseGenerator(rand.nextLong(),64,64,12d);
+
+        hillLayerMask = new ClippedPerlinNoiseGenerator(rand.nextLong(),128,128,10d,0.2f, true);
+        hillLayerNoise = new OctaveNoiseGenerator(rand.nextLong(),4,64,10d);
+
+        mountainLayerPattern = new RadialPatternGenerator(600d,120d,100d, -100d);
+        mountainLayerMask = new ClippedPerlinNoiseGenerator(rand.nextLong(),512,512,1,0,true);
+        mountainLayerNoise = new OctaveNoiseGenerator(rand.nextLong(),7,64,20d);
+
+        riverLayerMask = new VoronoiNoiseGenerator(rand.nextLong(), 512, 1);
+        riverLayerNoise = new PerlinNoiseGenerator(rand.nextLong(),4,4,1/256d);
+        riverTest = new KenzoNoiseGenerator(rand.nextLong(),8,5,3);
     }
 
     private float getLushness(int x, int z) {
@@ -69,27 +83,56 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
     }
 
     private void generateTerrain(int chunkX, int chunkZ, ChunkPrimer chunkPrimer) {
+        double[] baseNoise  = baseLayerNoise.getChunkValues(chunkX, chunkZ);
+
+        double[] hillMask = hillLayerMask.getChunkValues(chunkX,chunkZ);
+        double[] hillNoise = hillLayerNoise.getChunkValues(chunkX,chunkZ);
+
+        double[] mountainPattern = mountainLayerPattern.getChunkValues(chunkX,chunkZ);
+        double[] mountainMask = mountainLayerMask.getChunkValues(chunkX,chunkZ);
+        double[] mountainNoise = mountainLayerNoise.getChunkValues(chunkX,chunkZ);
+        int index = 0;
         for (int dx = 0; dx < 16; dx++) {
-            int x = chunkX * 16 + dx;
             for (int dz = 0; dz < 16; dz++) {
-                int z = chunkZ * 16 + dz;
-                int height = 60;// + (int) chunkHeight[dx * 16 + dz];
-                chunkPrimer.setBlockState(dx,0,dz,debugBlocks[0]);
-                for (int y = 1; y < height; y++) {
-                    chunkPrimer.setBlockState(dx,y,dz,debugBlocks[1]);
+                int variance = rand.nextInt(3);
+
+                // The base noise that is present across the whole world
+                double baseLayer = baseNoise[index];
+                // The layer of hills
+                double hillLayer = hillMask[index];
+                if (hillLayer > 1) {
+                    // smooth out the hillNoise at the base of the hill and add noise above the base
+                    hillLayer += Math.abs(hillNoise[index]) * Math.min(hillLayer / 2d,1d);
                 }
-                double testHeight = perlinNoiseGenerator.getValue(x,z);
-                Orespark.LOGGER.info(testHeight);
-                float temp = getTemp(x,z);
-                float lushness = getLushness(x,z);
-                chunkPrimer.setBlockState(dx,height,dz,visualizer[(int)Math.floor(testHeight + 2.5)]);
+                // The layer for mountains
+                double mountainLayer = mountainPattern[index] * mountainMask[index];
+                if (mountainLayer > 1) {
+                    mountainLayer += mountainNoise[index] * Math.min((mountainLayer-1 ) / 10d,1d);
+                }
+
+                double riverClip = 0.55;
+                double riverLayer = riverLayerMask.getValue(dx + chunkX * 16, dz + chunkZ * 16);
+                riverLayer -= riverLayerNoise.getValue(dx + chunkX * 16, dz + chunkZ * 16) + riverClip;
+                riverLayer = Math.max(riverLayer,0) * -15 / (1-riverClip);
+
+                double total = mountainLayer + hillLayer + baseLayer;
+                int height = 60 + (int)riverTest.getValue(dx+chunkX*16,dz+chunkZ*16);
+                for (int b = 0; b < variance + 1; b++) {
+                    chunkPrimer.setBlockState(dx,b,dz,BEDROCK);
+                }
+                for (int y = variance + 1; y < height; y++) {
+                    chunkPrimer.setBlockState(dx,y,dz,height + variance < 130 ? STONE : SNOW);
+                }
+                chunkPrimer.setBlockState(dx,height,dz,mountainLayer < 5 + variance ? GRASS : (height + variance < 130 ? STONE : SNOW));
+
+                index++; // dont touch
             }
         }
     }
 
     @Override
     public Chunk generateChunk(int chunkX, int chunkZ) {
-        this.rand.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
+        this.rand.setSeed(seed + (long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         ChunkPrimer chunkPrimer = new ChunkPrimer();
         generateChunkValues(chunkX,chunkZ);
 
@@ -111,7 +154,7 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
             for (int z = 0; z < 16; z++) {
                 chunkLushness[x * 16 + z] = getLushness(x + chunkX * 16, z + chunkZ * 16);
                 chunkTemp[x * 16 + z] = getTemp(x + chunkX * 16, z + chunkZ * 16);
-                chunkLushness[x * 16 + z] = perlinNoiseGenerator.getValue(x + chunkX * 16, z + chunkZ * 16);
+                chunkLushness[x * 16 + z] = baseLayerNoise.getValue(x + chunkX * 16, z + chunkZ * 16);
             }
         }
     }
