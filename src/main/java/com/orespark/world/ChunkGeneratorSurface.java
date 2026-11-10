@@ -71,7 +71,7 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
 
         riverLayerMask = new VoronoiNoiseGenerator(rand.nextLong(), 512, 1);
         riverLayerNoise = new PerlinNoiseGenerator(rand.nextLong(),4,4,1/256d);
-        riverTest = new KenzoNoiseGenerator(rand.nextLong(),8,5,3);
+        riverTest = new KenzoNoiseGenerator(rand.nextLong(),32,6,8);
     }
 
     private float getLushness(int x, int z) {
