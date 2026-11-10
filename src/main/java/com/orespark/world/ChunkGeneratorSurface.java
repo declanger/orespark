@@ -71,7 +71,7 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
 
         riverLayerMask = new VoronoiNoiseGenerator(rand.nextLong(), 512, 1);
         riverLayerNoise = new PerlinNoiseGenerator(rand.nextLong(),4,4,1/256d);
-        riverTest = new KenzoNoiseGenerator(rand.nextLong(),8,5,3);
+        riverTest = new KenzoNoiseGenerator(rand.nextLong(),32,6,8);
     }
 
     private float getLushness(int x, int z) {
@@ -91,6 +91,8 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
         double[] mountainPattern = mountainLayerPattern.getChunkValues(chunkX,chunkZ);
         double[] mountainMask = mountainLayerMask.getChunkValues(chunkX,chunkZ);
         double[] mountainNoise = mountainLayerNoise.getChunkValues(chunkX,chunkZ);
+
+        double[] riverMask = riverTest.getChunkValues(chunkX,chunkZ);
         int index = 0;
         for (int dx = 0; dx < 16; dx++) {
             for (int dz = 0; dz < 16; dz++) {
@@ -110,13 +112,10 @@ public class ChunkGeneratorSurface implements IChunkGenerator {
                     mountainLayer += mountainNoise[index] * Math.min((mountainLayer-1 ) / 10d,1d);
                 }
 
-                double riverClip = 0.55;
-                double riverLayer = riverLayerMask.getValue(dx + chunkX * 16, dz + chunkZ * 16);
-                riverLayer -= riverLayerNoise.getValue(dx + chunkX * 16, dz + chunkZ * 16) + riverClip;
-                riverLayer = Math.max(riverLayer,0) * -15 / (1-riverClip);
+                double riverLayer = riverMask[index];
 
                 double total = mountainLayer + hillLayer + baseLayer;
-                int height = 60 + (int)riverTest.getValue(dx+chunkX*16,dz+chunkZ*16);
+                int height = 60 + (int)riverLayer;
                 for (int b = 0; b < variance + 1; b++) {
                     chunkPrimer.setBlockState(dx,b,dz,BEDROCK);
                 }
